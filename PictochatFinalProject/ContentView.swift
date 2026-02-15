@@ -11,10 +11,6 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var appState: AppState = AppState()
     
-    init() {
-        self.appState.currentState = .logo
-    }
-    
     var body: some View {
         switch (appState.currentState) {
             case .logo:
