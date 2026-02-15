@@ -11,8 +11,7 @@ struct GridLines: View {
     // MARK: - VARS
     @State var gridStyle: GridStyle
     @State var scrollStyle: GridScrollStyle
-    @State private var camera: CGPoint = .zero
-  
+    @State private var scrollCamera: CGPoint = .zero
     // MARK: - CONSTRUCTORS
     init () {
         gridStyle = GridStyle()
@@ -37,10 +36,20 @@ struct GridLines: View {
     
     // MARK: - BODY
     var body: some View {
-        Canvas { frame, size in
-            frame.stroke(drawGridLines(frameSize: size),
-                         with: gridStyle.lineShading,
-                         style: gridStyle.stroke)
+        TimelineView(.animation) { timeline in
+            ZStack {
+                Canvas { frame, size in
+                    scrollCamera(camera: scrollCamera,
+                                 rate: (CGFloat)(timeline
+                                 .date
+                                 .timeIntervalSinceReferenceDate)
+                                 .truncatingRemainder(dividingBy: 60))
+                                                                
+                    frame.stroke(drawGridLines(frameSize: size),
+                                 with: gridStyle.lineShading,
+                                 style: gridStyle.stroke)
+                }
+            }
         }
     }
     
@@ -60,8 +69,8 @@ struct GridLines: View {
         // Handy constants!
         let sizeX: CGFloat = gridStyle.cellSize.width,
             sizeY: CGFloat = gridStyle.cellSize.height,
-            cameraX: CGFloat = camera.x,
-            cameraY: CGFloat = camera.y,
+            cameraX: CGFloat = scrollCamera.x,
+            cameraY: CGFloat = scrollCamera.y,
             frameH: CGFloat = frameSize.height,
             frameW: CGFloat = frameSize.width
         
@@ -89,7 +98,7 @@ struct GridLines: View {
             
             // Now we add a grid line
             gridPath.move(to: CGPoint(x: 0, y: rows))
-            gridPath.addLine(to: CGPoint(x: frameW, y: rows))
+            gridPath.addLine(to: CGPoint(x: frameW + 5, y: rows))
         }
         
         // Do this for every grid column
@@ -99,26 +108,30 @@ struct GridLines: View {
             
             // Now we add a grid line
             gridPath.move(to: CGPoint(x: columns, y: 0))
-            gridPath.addLine(to: CGPoint(x: columns, y: frameH))
-        }
-        
-        // Here's where we'll "scroll" the "camera"
-        if (scrollStyle.isScrolling) {
-            // Get our scroll speed and angle
-            let speed = scrollStyle.scrollSpeed,
-                angle = scrollStyle.scrollAngle
-            
-            let nextX = cameraX + (speed * cos(angle)),
-                nextY = cameraY + (speed * sin(angle)),
-            
-            camera = CGPoint(x: nextX, y: nextY)
+            gridPath.addLine(to: CGPoint(x: columns, y: frameH + 5))
         }
         
         // We've finished drawing the grid!
         return gridPath
     }
+    
+    // MARK: - scrollCamera INTERNAL FUNCTION
+    private func scrollCamera(camera: CGPoint, rate: CGFloat) {
+        let speed: CGFloat = scrollStyle.scrollSpeed,
+            angle: CGFloat = scrollStyle.scrollAngle,
+            cameraX: CGFloat = camera.x,
+            cameraY: CGFloat = camera.y,
+            nextX: CGFloat = (cameraX + (speed * cos(angle))) * rate,
+            nextY: CGFloat = (cameraY + (speed * sin(angle))) * rate
+        
+        scrollCamera.x = nextX
+        scrollCamera.y = nextY
+    }
 }
 
+// MARK: - PREVIEW
 #Preview {
-    GridLines(scrollStyle: GridScrollStyle(scrollSpeed: 8))
+    HStack{
+        GridLines(scrollStyle: GridScrollStyle())
+    }
 }
