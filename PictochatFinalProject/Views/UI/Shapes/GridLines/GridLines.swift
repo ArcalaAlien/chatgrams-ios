@@ -12,25 +12,29 @@ struct GridLines: View {
     var gridStyle: GridStyle
     var scrollStyle: GridScrollStyle
     
+    private let startTime: Date
+    
     // MARK: - CONSTRUCTOR
     init(gridStyle: GridStyle = GridStyle(),
          scrollStyle: GridScrollStyle = .none) {
         self.gridStyle = gridStyle
         self.scrollStyle = scrollStyle
+        
+        self.startTime = Date.now
     }
     
     // MARK: - BODY
     var body: some View {
         TimelineView(.animation) { timeline in
             Canvas { frame, size in
-                let camera = GridLineCamera(position: .zero,
+                var camera = GridLineCamera(position: .zero,
                                             scrollStyle: scrollStyle)
                 
                 let gridLines = GridLineRenderer(cellSize: gridStyle.cellSize,
                                                  bounds: size)
                 
-                let rate = timeline.date.timeIntervalSinceReferenceDate
-                frame.stroke(gridLines.draw(camera: camera.scroll(rate)),
+                camera = camera.scroll(timeline.date.timeIntervalSince(startTime))
+                frame.stroke(gridLines.draw(camera: camera),
                              with: gridStyle.lineShading,
                              style: gridStyle.stroke)
             }
@@ -52,5 +56,5 @@ struct GridLines: View {
 // MARK: - PREVIEW
 #Preview {
     GridLines(  gridStyle: GridStyle(),
-                scrollStyle: GridScrollStyle(scrollAngle: 0, scrollSpeed: 10))
+                scrollStyle: GridScrollStyle(scrollAngle: Angle(degrees: 0), scrollSpeed: 10))
 }

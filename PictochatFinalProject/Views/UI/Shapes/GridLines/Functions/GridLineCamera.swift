@@ -17,22 +17,19 @@ struct GridLineCamera {
         self.scrollStyle = scrollStyle
     }
     
-    func scroll(_ rate: TimeInterval) -> GridLineCamera {
-        let nextX: CGFloat,
-            nextY: CGFloat
-        
-        if (scrollStyle.isScrolling) {
-            let speed: CGFloat = scrollStyle.scrollSpeed,
-                angle: CGFloat = scrollStyle.scrollAngle
-            
-            nextX = position.x + (speed * cos(angle)) * rate
-            nextY = position.y + (speed * sin(angle)) * rate
-        } else {
-            nextX = .zero
-            nextY = .zero
+    func scroll(_ elapsedTime: TimeInterval) -> GridLineCamera {
+        if (!scrollStyle.isScrolling) {
+            return self
         }
+        
+        let speed: CGFloat = scrollStyle.scrollSpeed,
+            angle: Angle = scrollStyle.scrollAngle
+        
+        var nextPosition: CGPoint = .zero
+        nextPosition.x = position.x + speed * cos(angle.radians) * CGFloat(elapsedTime)
+        nextPosition.y = position.y + speed * sin(angle.radians) * CGFloat(elapsedTime)
             
-        return GridLineCamera(position: CGPoint(x: nextX, y: nextY),
+        return GridLineCamera(position: nextPosition,
                               scrollStyle: scrollStyle)
     }
 }
