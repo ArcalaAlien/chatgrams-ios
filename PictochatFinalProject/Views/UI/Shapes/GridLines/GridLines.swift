@@ -11,7 +11,7 @@ struct GridLines: View {
     // MARK: - VARS
     @State var gridStyle: GridStyle
     @State var scrollStyle: GridScrollStyle
-    @State private var scrollCamera: CGPoint = .zero
+    
     // MARK: - CONSTRUCTORS
     init () {
         gridStyle = GridStyle()
@@ -37,40 +37,36 @@ struct GridLines: View {
     // MARK: - BODY
     var body: some View {
         TimelineView(.animation) { timeline in
-            ZStack {
-                Canvas { frame, size in
-                    scrollCamera(camera: scrollCamera,
-                                 rate: (CGFloat)(timeline
-                                 .date
-                                 .timeIntervalSinceReferenceDate)
-                                 .truncatingRemainder(dividingBy: 60))
-                                                                
-                    frame.stroke(drawGridLines(frameSize: size),
-                                 with: gridStyle.lineShading,
-                                 style: gridStyle.stroke)
-                }
-            }
-        }
-    }
+            Canvas { frame, size in
+                frame.stroke(
+                    drawGridLines(
+                            camera: scrollCamera(rate: (CGFloat)(timeline.date.timeIntervalSinceReferenceDate)),
+                            frameSize: size),
+                    with: gridStyle.lineShading,
+                    style: gridStyle.stroke
+                ) // end of stroke
+            } // end of Canvas
+        } // end of Timeline
+    } // end of Body
     
     // MARK: - MUTATORS
-    func gridStyle(style: GridStyle) -> Self {
+    func gridStyle(style: GridStyle) -> GridLines {
         gridStyle = style
         return self
     }
     
-    func scrollStyle(style: GridScrollStyle) -> Self {
+    func scrollStyle(style: GridScrollStyle) -> GridLines {
         scrollStyle = style
         return self
     }
     
     // MARK: - drawGridLines INTERAL FUNCTION
-    private func drawGridLines(frameSize: CGSize) -> Path {
+    private func drawGridLines(camera: CGPoint, frameSize: CGSize) -> Path {
         // Handy constants!
         let sizeX: CGFloat = gridStyle.cellSize.width,
             sizeY: CGFloat = gridStyle.cellSize.height,
-            cameraX: CGFloat = scrollCamera.x,
-            cameraY: CGFloat = scrollCamera.y,
+            cameraX: CGFloat = camera.x,
+            cameraY: CGFloat = camera.y,
             frameH: CGFloat = frameSize.height,
             frameW: CGFloat = frameSize.width
         
@@ -116,22 +112,19 @@ struct GridLines: View {
     }
     
     // MARK: - scrollCamera INTERNAL FUNCTION
-    private func scrollCamera(camera: CGPoint, rate: CGFloat) {
+    private func scrollCamera(rate: CGFloat) -> CGPoint {
         let speed: CGFloat = scrollStyle.scrollSpeed,
             angle: CGFloat = scrollStyle.scrollAngle,
-            cameraX: CGFloat = camera.x,
-            cameraY: CGFloat = camera.y,
-            nextX: CGFloat = (cameraX + (speed * cos(angle))) * rate,
-            nextY: CGFloat = (cameraY + (speed * sin(angle))) * rate
+            nextX: CGFloat = (speed * cos(angle)) * rate,
+            nextY: CGFloat = (speed * sin(angle)) * rate
         
-        scrollCamera.x = nextX
-        scrollCamera.y = nextY
+        return CGPoint(x: nextX, y: nextY)
     }
 }
 
 // MARK: - PREVIEW
 #Preview {
     HStack{
-        GridLines(scrollStyle: GridScrollStyle())
+        GridLines(scrollStyle: GridScrollStyle(scrollAngle: 45, scrollSpeed: 8))
     }
 }
