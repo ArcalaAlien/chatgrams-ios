@@ -19,22 +19,8 @@ struct GridScrollStyle {
         scrollSpeed != .zero
     }
     
-    init() {
-        scrollAngle = .zero
-        scrollSpeed = .zero
-    }
-    
-    init(scrollAngle: CGFloat) {
-        self.scrollAngle = scrollAngle
-        self.scrollSpeed = .zero
-    }
-    
-    init(scrollSpeed: CGFloat) {
-        self.scrollAngle = .zero
-        self.scrollSpeed = scrollSpeed
-    }
-    
-    init(scrollAngle: CGFloat, scrollSpeed: CGFloat) {
+    init(scrollAngle: CGFloat = 0,
+         scrollSpeed: CGFloat = 0) {
         self.scrollAngle = scrollAngle
         self.scrollSpeed = scrollSpeed
     }

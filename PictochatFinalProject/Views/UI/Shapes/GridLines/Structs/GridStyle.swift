@@ -18,40 +18,6 @@ struct GridStyle {
     /// The stroke style of the grid
     var stroke: StrokeStyle
     
-    init() {
-        self.cellSize = CGSize(width: 16, height: 16)
-        self.lineShading = .color(.black)
-        stroke = StrokeStyle(lineWidth: 1,
-                             lineCap: .square,
-                             lineJoin: .miter,
-                             miterLimit: 1,
-                             dash: [],
-                             dashPhase: 0)
-    }
-    
-    init (cellSize: CGSize = CGSize(width: 16, height: 16)) {
-        self.cellSize = cellSize
-        lineShading = .color(.black)
-        stroke = StrokeStyle(lineWidth: 1,
-                             lineCap: .square,
-                             lineJoin: .miter,
-                             miterLimit: 1,
-                             dash: [],
-                             dashPhase: 0)
-    }
-    
-    init (cellSize: CGSize                       = CGSize(width: 16, height: 16),
-          lineShading: GraphicsContext.Shading   = .color(.black)) {
-        self.cellSize = cellSize
-        self.lineShading = lineShading
-        self.stroke = StrokeStyle(lineWidth: 1,
-                                  lineCap: .square,
-                                  lineJoin: .miter,
-                                  miterLimit: 1,
-                                  dash: [],
-                                  dashPhase: 0)
-    }
-    
     init(cellSize: CGSize                       = CGSize(width: 16, height: 16),
          lineShading: GraphicsContext.Shading   = .color(.black),
          stroke: StrokeStyle                    = StrokeStyle(lineWidth: 1,
