@@ -47,9 +47,9 @@ struct GridLineRenderer {
         //
         // Otherwise, we draw from just off the top of the screen
         let lineSpawnX = isScrolling ?
-                         (-cameraX / sizeX) * sizeX + cameraX : -5,
+                         floor((-cameraX / sizeX)) * sizeX + cameraX : -5,
             lineSpawnY = isScrolling ?
-                         (-cameraY / sizeY) * sizeY + cameraY : -5
+                         floor((-cameraY / sizeY)) * sizeY + cameraY : -5
         
         // Set up our path for drawing
         var gridPath = Path()

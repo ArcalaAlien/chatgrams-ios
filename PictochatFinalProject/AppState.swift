@@ -8,13 +8,12 @@ import SwiftUI
 internal import Combine
 
 class AppState: ObservableObject {
-    enum validStates: Int {
+    enum states: Int {
         case logo = 0,
         lobby,
         settings,
         chatting
     }
     
-    @Published var currentState: validStates = .logo
+    @Published var currentState: states = .logo
 }
-

@@ -8,16 +8,34 @@
 import SwiftUI
 
 struct GridBackground: View {
-    @State var cellSize: CGSize// size of each cell
-    @State var gridOffset: CGPoint = CGPoint(x: 0, y: 0)
-    var isScrolling: Bool = false // are we a scrolling grid?
+    let bottomLayer: GridLines = GridLines()
+    let topLayer: GridLines = GridLines()
     
     var body: some View {
-        ZStack {
+        GeometryReader { geo in
+            let frameH = geo.size.height,
+                frameW = geo.size.width
+            
+            ZStack {
+                bottomLayer
+                    .scrollStyle(GridScrollStyle(scrollAngle: Angle(degrees: -45),
+                                                 scrollSpeed: 15))
+                    .cellSize(CGSize(width: 300, height: 300))
+                    .lineShading(.color(.secondary))
+                topLayer
+                    .scrollStyle(GridScrollStyle(scrollAngle: Angle(degrees: 45),
+                                                 scrollSpeed: 17))
+                    .cellSize(CGSize(width: 105, height: 105))
+                    .lineShading(.linearGradient(Gradient(colors: [.appPrimaryAccent, .appSecondaryAccent]),
+                                                 startPoint: CGPoint(x: 0,
+                                                                     y: 0),
+                                                 endPoint: CGPoint(x: frameW,
+                                                                   y: frameH)))
+            }
         }
     }
 }
 
 #Preview {
-    GridBackground(cellSize: CGSize(width: 16, height: 16))
+    GridBackground()
 }

@@ -1,5 +1,5 @@
 //
-//  GridStyle.swift
+//  GridLineStyle.swift
 //  PictochatFinalProject
 //
 //  Created by 2155097-050 on 2/14/26.
@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// A group of values
-struct GridStyle {
+struct GridLineStyle {
     /// The x and y size of the cell
     var cellSize: CGSize
     

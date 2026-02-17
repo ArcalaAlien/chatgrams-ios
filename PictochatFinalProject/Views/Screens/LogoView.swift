@@ -7,12 +7,12 @@
 import SwiftUI
 
 struct LogoView: View {
-    @State var currentState: AppState.validStates
     @State private var onScreen: Bool = false
+    @EnvironmentObject var appState: AppState
     
     var body: some View {
-        // MARK: - AppLogo Start
         VStack {
+            // MARK: - AppLogo START
             AppLogo()
                 .frame(width: 250, height: 250)
                 .onAppear {
@@ -25,14 +25,14 @@ struct LogoView: View {
                     //Fade Out: 1 sec, Hold: 3 Sec, Fade Out: 1 Sec
                     Timer.scheduledTimer(withTimeInterval: 6, repeats: false) {_ in
                         withAnimation(Animation.easeOut(duration: 2)) {
-                            onScreen = false;
+                            onScreen = false
                         }
                     } // End of fade out timer
                 } // end of onAppear
                 .opacity(onScreen ? 1 : 0)
-            // MARK: - AppLogo Finish
+            // MARK: - AppLogo FINISH
             
-            // MARK: - AppTitle Start
+            // MARK: - AppTitle START
             AppTitle(borderWidth: 0,
                      fontDesign: .monospaced,
                      fontStyle: .largeTitle,
@@ -50,13 +50,20 @@ struct LogoView: View {
                 }
             } // end of onAppear
             .opacity(onScreen ? 1 : 0)
-            // MARK: - AppTitle Finish
-        }
+            // MARK: - AppTitle FINISH
+        } // end of Main VStack
         .frame(width: 400, height: 400)
-        // end of VStack
-    } // end of body
-}
+        .onAppear() {
+            // MARK: - STATE CHANGE TIMER
+            Timer.scheduledTimer(withTimeInterval: 7, repeats: false) { _ in
+                appState.currentState = .lobby
+            }
+        } // End of VStack onAppear
+    } // end of Body
+} // end of LogoView
 
 #Preview {
-    LogoView(currentState: .logo)
+    @Previewable @StateObject var appState:AppState = AppState()
+    LogoView().environmentObject(appState)
 }
+  

@@ -13,20 +13,41 @@ struct LobbyView: View {
         createRoom
     }
     
-    @State var currentState: AppState.validStates
     @State private var currentTab: CurrentTab = .publicRooms
     
     var body: some View {
-        VStack {
-            HStack {
-                
+        GeometryReader { geo in
+            let frameH = geo.size.height,
+                frameW = geo.size.width
+            
+            ZStack {
+                GridBackground()
+                VStack {
+                    ZStack {
+                        Rectangle()
+                            .opacity(0.8)
+                            .foregroundStyle(.primary)
+                    }.frame(width: frameW * 0.95,
+                            height: frameH * 0.8) // End of Lobby Frame ZStack
+                    
+                    ZStack {
+                        Rectangle()
+                            .opacity(0.8)
+                            .foregroundStyle(.primary)
+                        Button("Chat Settings") {
+                            
+                        }
+                        .foregroundStyle(Color.accentColor)
+                        .font(.title)// End of button
+                    }.frame(width: frameW * 0.6,
+                            height: frameH * 0.1) // end of Settings Button ZStack
+                }
             }
-            
-            
-        }// End of main VStack
+        }
     } // End of body
 }
 
 #Preview {
-    LobbyView(currentState: .lobby)
+    
+
 }

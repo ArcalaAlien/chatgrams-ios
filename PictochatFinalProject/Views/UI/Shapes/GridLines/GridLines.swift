@@ -9,13 +9,13 @@ import SwiftUI
 
 struct GridLines: View {
     // MARK: - VARS
-    var gridStyle: GridStyle
+    var gridStyle: GridLineStyle
     var scrollStyle: GridScrollStyle
     
     private let startTime: Date
     
     // MARK: - CONSTRUCTOR
-    init(gridStyle: GridStyle = GridStyle(),
+    init(gridStyle: GridLineStyle = GridLineStyle(),
          scrollStyle: GridScrollStyle = .none) {
         self.gridStyle = gridStyle
         self.scrollStyle = scrollStyle
@@ -41,20 +41,55 @@ struct GridLines: View {
         }
     } // end of Body
     
-    // MARK: - MUTATORS
-    func gridStyle(style: GridStyle) -> GridLines {
+    // MARK: - PROPERTY WRAPPERS
+    func gridStyle(_ style: GridLineStyle) -> GridLines {
         return GridLines(gridStyle: style,
                          scrollStyle: self.scrollStyle)
     }
     
-    func scrollStyle(style: GridScrollStyle) -> GridLines {
+    func scrollStyle(_ style: GridScrollStyle) -> GridLines {
         return GridLines(gridStyle: self.gridStyle,
                          scrollStyle: style)
+    }
+    
+    func cellSize(_ size: CGSize) -> GridLines {
+        var styleCopy = gridStyle
+        styleCopy.cellSize = size
+        return GridLines(gridStyle: styleCopy,
+                         scrollStyle: self.scrollStyle)
+    }
+    
+    func lineShading(_ shading: GraphicsContext.Shading) -> GridLines {
+        var styleCopy = gridStyle
+        styleCopy.lineShading = shading
+        return GridLines(gridStyle: styleCopy,
+                         scrollStyle: self.scrollStyle)
+    }
+    
+    func stroke(_ style: StrokeStyle) -> GridLines {
+        var styleCopy = gridStyle
+        styleCopy.stroke = style
+        return GridLines(gridStyle: styleCopy,
+                         scrollStyle: self.scrollStyle)
+    }
+    
+    func scrollAngle(angle: Angle) -> GridLines {
+        var styleCopy = scrollStyle
+        styleCopy.scrollAngle = angle
+        return GridLines(gridStyle: self.gridStyle,
+                         scrollStyle: styleCopy)
+    }
+    
+    func scrollSpeed(speed: CGFloat) -> GridLines {
+        var styleCopy = scrollStyle
+        styleCopy.scrollSpeed = speed
+        return GridLines(gridStyle: self.gridStyle,
+                         scrollStyle: styleCopy)
     }
 }
 
 // MARK: - PREVIEW
 #Preview {
-    GridLines(  gridStyle: GridStyle(),
-                scrollStyle: GridScrollStyle(scrollAngle: Angle(degrees: 0), scrollSpeed: 10))
+    GridLines(  gridStyle: GridLineStyle(),
+                scrollStyle: GridScrollStyle(scrollAngle: Angle(degrees: 20), scrollSpeed: -10))
 }

@@ -9,16 +9,20 @@ import SwiftUI
 
 
 struct ContentView: View {
-    @StateObject var appState: AppState = AppState()
+    @StateObject private var appState: AppState = AppState()
+    
+    init() {
+        appState.currentState = .logo
+    }
     
     var body: some View {
         switch (appState.currentState) {
             case .logo:
-                LogoView(currentState: appState.currentState)
+                LogoView().environmentObject(appState)
             case .lobby:
-                LobbyView(currentState: appState.currentState)
+                LobbyView().environmentObject(appState)
             default:
-                LogoView(currentState: appState.currentState)
+                LogoView().environmentObject(appState)
         }
     }
 }
