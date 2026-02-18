@@ -23,7 +23,7 @@ class AppState: ObservableObject {
         currentState = .logo
     }
     
-    func setState(_ newState: states) {
+    func set(_ newState: states) {
         currentState = newState
         switch(currentState) {
             case .logo:

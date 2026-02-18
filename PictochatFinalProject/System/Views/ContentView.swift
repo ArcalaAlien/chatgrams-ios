@@ -7,21 +7,21 @@
 
 import SwiftUI
 
-
 struct ContentView: View {
     @StateObject private var appState: AppState = AppState()
     @StateObject private var blinder: Blinder = Blinder()
+    @StateObject private var audioPlayer: AudioEngine = AudioEngine(soundPath: .none)
     
     var body: some View {
         ZStack {
+            GridBackground()
+            
             // If we're not on the logo
             // then we can use the grid background
-            if (appState.currentState != .logo) {
-                GridBackground()
-            }
-            
             // The current screen we're looking at
             appState.currentView
+                .fileManager(EnvironmentValues().fileManager)
+                .environmentObject(audioPlayer)
                 .environmentObject(appState)
                 .environmentObject(blinder)
             

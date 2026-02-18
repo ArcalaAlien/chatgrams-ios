@@ -44,7 +44,9 @@ struct LobbyView: View {
             }
         }
         .onAppear() {
-            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {_ in 
+            blinder.show()
+            
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {_ in
                 blinder.hide()
             }
         }
@@ -52,5 +54,13 @@ struct LobbyView: View {
 }
 
 #Preview {
+    @Previewable @StateObject var blinder: Blinder = Blinder()
     
+    ZStack {
+        GridBackground()
+        LobbyView()
+            .environmentObject(blinder)
+        blinder.shape
+            .opacity(blinder.displaying ? 1 : 0)
+    }
 }

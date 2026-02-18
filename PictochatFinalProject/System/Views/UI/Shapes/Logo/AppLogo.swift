@@ -30,7 +30,6 @@ struct AppLogo: View {
                         y: frameH / 5)
             } // end main bubble ZStack
         } // end of GeometryReader
-        .border(.red, width: 1)
     } // end of body
 } // end of AppLogo
 

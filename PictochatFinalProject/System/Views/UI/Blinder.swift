@@ -33,14 +33,12 @@ class Blinder: ObservableObject {
         return self
     }
     
-    func show() -> Blinder {
+    func show() {
         self.displaying = true
-        return self
     }
     
-    func hide() -> Blinder{
+    func hide() {
         self.displaying = false
-        return self
     }
 }
 
