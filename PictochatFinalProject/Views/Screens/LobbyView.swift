@@ -13,15 +13,14 @@ struct LobbyView: View {
         createRoom
     }
     
+    @EnvironmentObject var blinder: Blinder
     @State private var currentTab: CurrentTab = .publicRooms
     
     var body: some View {
         GeometryReader { geo in
             let frameH = geo.size.height,
                 frameW = geo.size.width
-            
             ZStack {
-                GridBackground()
                 VStack {
                     ZStack {
                         Rectangle()
@@ -44,10 +43,14 @@ struct LobbyView: View {
                 }
             }
         }
+        .onAppear() {
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {_ in 
+                blinder.hide()
+            }
+        }
     } // End of body
 }
 
 #Preview {
     
-
 }
