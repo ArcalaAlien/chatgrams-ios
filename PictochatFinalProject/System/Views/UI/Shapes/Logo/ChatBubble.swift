@@ -17,15 +17,15 @@ struct ChatBubble: Shape {
         
         // Drawing the bubble square
         path.addLine(to: CGPoint(x: frameW, y: 0))
-        path.addLine(to: CGPoint(x: frameW, y: frameH / 1.65))
-        path.addLine(to: CGPoint(x: frameW / 1.35, y: frameH / 1.65))
+        path.addLine(to: CGPoint(x: frameW, y: frameH / 1.9))
+        path.addLine(to: CGPoint(x: frameW / 1.2, y: frameH / 1.9))
         
         // Drawing little bubble triangle thing
-        path.addLine(to: CGPoint(x: frameW / 1.35, y: frameH))
-        path.addLine(to: CGPoint(x: frameW / 2.5, y: frameH / 1.65))
+        path.addLine(to: CGPoint(x: frameW / 1.2, y: frameH))
+        path.addLine(to: CGPoint(x: frameW / 2.8, y: frameH / 1.9))
         
         // Back to finish the bubble.
-        path.addLine(to: CGPoint(x: 0, y: frameH / 1.65))
+        path.addLine(to: CGPoint(x: 0, y: frameH / 1.9))
         path.addLine(to: .zero)
         
         path.closeSubpath()

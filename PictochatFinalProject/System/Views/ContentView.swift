@@ -14,12 +14,17 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            GridBackground()
+            if appState.currentState != .logo{
+                GridBackground()
+                    .drawingGroup()
+                    .allowsHitTesting(false)
+            }
             
             // If we're not on the logo
             // then we can use the grid background
             // The current screen we're looking at
             appState.currentView
+                .background(Color.clear)
                 .fileManager(EnvironmentValues().fileManager)
                 .environmentObject(audioPlayer)
                 .environmentObject(appState)

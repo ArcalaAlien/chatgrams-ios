@@ -17,25 +17,24 @@ struct GridBackground: View {
                 frameW = geo.size.width
             
             ZStack {
-                Rectangle()
-                    .fill(Color.appGridBackgroundColor)
-                
                 bottomLayer
-                    .scrollStyle(GridScrollStyle(scrollAngle: Angle(degrees: -22.5),
-                                                 scrollSpeed: 12))
+                    .scrollStyle(GridScrollStyle(scrollAngle: Angle(degrees: -22.5),                                scrollSpeed: 10))
                     .cellSize(CGSize(width: 300, height: 300))
+                    .gridOffset(CGPoint(x: frameH / 20, y: .zero))
                     .lineShading(.color(.appPrimaryColor))
+                
                 topLayer
                     .scrollStyle(GridScrollStyle(scrollAngle: Angle(degrees: 45),
                                                  scrollSpeed: 17))
                     .cellSize(CGSize(width: 105, height: 105))
-                    .lineShading(.linearGradient(Gradient(colors: [.appPrimaryAccent,                                                     .appSecondaryAccent]),
-                                                 startPoint: CGPoint(x: 0,
-                                                                     y: 0),
-                                                 endPoint: CGPoint(x: frameW,
-                                                                   y: frameH)))
+                    .lineShading(
+                        .linearGradient(
+                            Gradient(colors: [.appPrimaryAccent,             .appSecondaryAccent]),
+                            startPoint: .zero,
+                            endPoint: CGPoint(x: frameW, y: frameH))
+                        )
             }
-        }
+        }.background(Color.clear)
     }
 }
 

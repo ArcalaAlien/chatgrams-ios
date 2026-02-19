@@ -47,7 +47,9 @@ struct LobbyView: View {
             blinder.show()
             
             Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {_ in
-                blinder.hide()
+                withAnimation(.easeInOut(duration: 2)) {
+                    blinder.hide()
+                }
             }
         }
     } // End of body

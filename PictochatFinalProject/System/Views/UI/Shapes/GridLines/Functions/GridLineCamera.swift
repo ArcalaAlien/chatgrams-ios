@@ -9,12 +9,15 @@ import SwiftUI
 
 struct GridLineCamera {
     var position: CGPoint = .zero
+    var offset: CGPoint = .zero
     var scrollStyle: GridScrollStyle = .none
     
     init(position: CGPoint,
-         scrollStyle: GridScrollStyle) {
+         scrollStyle: GridScrollStyle,
+         offset: CGPoint = .zero) {
         self.position = position
         self.scrollStyle = scrollStyle
+        self.offset = offset
     }
     
     func scroll(_ elapsedTime: TimeInterval) -> GridLineCamera {
@@ -26,8 +29,8 @@ struct GridLineCamera {
             angle: Angle = scrollStyle.scrollAngle
         
         var nextPosition: CGPoint = .zero
-        nextPosition.x = position.x + speed * cos(angle.radians) * CGFloat(elapsedTime)
-        nextPosition.y = position.y + speed * sin(angle.radians) * CGFloat(elapsedTime)
+        nextPosition.x = (position.x + offset.x) + speed * cos(angle.radians) * CGFloat(elapsedTime)
+        nextPosition.y = (position.y + offset.y) + speed * sin(angle.radians) * CGFloat(elapsedTime)
             
         return GridLineCamera(position: nextPosition,
                               scrollStyle: scrollStyle)

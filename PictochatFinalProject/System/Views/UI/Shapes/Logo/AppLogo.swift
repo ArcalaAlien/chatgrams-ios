@@ -15,21 +15,30 @@ struct AppLogo: View {
             
             // MARK: - Logo ZStack
             ZStack {
-                LogoChatBubble(bubbleIcon: Image(systemName: "keyboard.fill"),
-                               bubbleStyle: Color.appSecondaryAccent,
-                               iconStyle: Color.appSecondaryColor)
-                .offset(x: -frameW / 2.75,
-                        y: -frameH / 5)
-                 // End of right chat bubble
+                // Left Chat Bubble
+                ChatBubble()
+                    .rotation3DEffect(Angle.degrees(180), axis: (x: 0, y: 1, z: 0))
+                    .scaledToFit()
+                    .foregroundStyle(
+                        LinearGradient(colors: [.appPrimaryAccent,
+                                                .appPrimaryColor],
+                                       startPoint: .top,
+                                       endPoint: .bottom))
+                    .offset(x: -frameW / 4, y: -frameH / 6)
+                // End Left Chat Bubble
                 
-                LogoChatBubble(bubbleIcon: Image(systemName: "pencil.and.scribble"),
-                               bubbleStyle: Color.appPrimaryAccent,
-                               iconStyle: Color.appSecondaryColor,
-                               mirrored: true)
-                .offset(x: frameW / 2.75,
-                        y: frameH / 5)
+                // Right Chat Bubble
+                ChatBubble()
+                    .scaledToFit()
+                    .foregroundStyle(
+                        LinearGradient(colors: [.appSecondaryAccent,
+                                                .appPrimaryColor],
+                                       startPoint:  .top,
+                                       endPoint: .bottom))
+                    .offset(x: frameW / 4, y: frameH / 6)
+                //End Right Chat Bubble
             } // end main bubble ZStack
-        } // end of GeometryReader
+        }// end of GeometryReader
     } // end of body
 } // end of AppLogo
 
