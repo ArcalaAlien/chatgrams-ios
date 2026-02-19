@@ -2,7 +2,7 @@
 //  GridScrollStyle.swift
 //  PictochatFinalProject
 //
-//  Created by 2155097-050 on 2/14/26.
+//  Created by Jacob Martin on 2/14/26.
 //
 
 import SwiftUI

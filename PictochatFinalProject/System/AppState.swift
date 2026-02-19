@@ -2,12 +2,15 @@
 //  AppState.swift
 //  PictochatFinalProject
 //
-//  Created by 2155097-050 on 2/4/26.
+//  Created by Jacob Martin on 2/4/26.
 //
 import SwiftUI
 internal import Combine
 
 class AppState: ObservableObject {
+    @EnvironmentObject var watcher: GridLineBackgroundWatcher
+    @EnvironmentObject var blinder: Blinder
+    
     enum states: Int {
         case logo = 0,
         lobby,
@@ -15,10 +18,12 @@ class AppState: ObservableObject {
         chatting
     }
     
+    @Published var appFrameSize: CGSize
     @Published var currentView: AnyView
     @Published var currentState: states
     
     init() {
+        appFrameSize = .zero
         currentView = AnyView(LogoView())
         currentState = .logo
     }
@@ -29,7 +34,9 @@ class AppState: ObservableObject {
             case .logo:
                 currentView = AnyView(LogoView())
             case .lobby:
-                currentView = AnyView(LobbyView())
+                currentView = AnyView(LobbyView()
+                                                .environmentObject(blinder)
+                                                .environmentObject(watcher))
             default:
                 currentView = AnyView(LogoView())
         } // end of switch

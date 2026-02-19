@@ -2,7 +2,7 @@
 //  GridLines.swift
 //  PictochatFinalProject
 //
-//  Created by 2155097-050 on 2/14/26.
+//  Created by Jacob Martin on 2/14/26.
 //
 
 import SwiftUI
@@ -110,4 +110,5 @@ struct GridLines: View {
     GridLines(  gridStyle: GridLineStyle(),
                 scrollStyle: GridScrollStyle(scrollAngle: Angle(degrees: 20), scrollSpeed: -10),
                 gridOffset: CGPoint(x: .zero, y: -30))
+    .cellSize(CGSize(width: 90, height: 90))
 }

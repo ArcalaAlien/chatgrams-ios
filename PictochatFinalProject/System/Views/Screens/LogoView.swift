@@ -2,15 +2,16 @@
 //  Logo.swift
 //  PictochatFinalProject
 //
-//  Created by 2155097-050 on 2/4/26.
+//  Created by Jacob Martin on 2/4/26.
 //
 import SwiftUI
 import AVFoundation
 
 struct LogoView: View {
-    @EnvironmentObject var audioPlayer: AudioEngine
-    @EnvironmentObject var appState: AppState
-    @EnvironmentObject var blinder: Blinder
+    @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var backgroundWatcher: GridLineBackgroundWatcher
+    @EnvironmentObject private var blinder: Blinder
+    @EnvironmentObject private var audioPlayer: AudioEngine
 
     var body: some View {
         GeometryReader { geo in
@@ -54,18 +55,22 @@ struct LogoView: View {
 } // end of LogoView
 
 #Preview {
-    @Previewable @StateObject var audioPlayer: AudioEngine = AudioEngine(soundPath: .none)
     @Previewable @StateObject var appState: AppState = AppState()
+    @Previewable @StateObject var watcher: GridLineBackgroundWatcher = GridLineBackgroundWatcher()
     @Previewable @StateObject var blinder: Blinder = Blinder()
+    @Previewable @StateObject var audioPlayer: AudioEngine = AudioEngine(soundPath: .none)
     
-    ZStack {
-        LogoView()
-            .environmentObject(audioPlayer)
-            .environmentObject(appState)
-            .environmentObject(blinder)
-        blinder.shape
-            .foregroundStyle(Color.blinderColor)
-            .opacity(blinder.displaying ? 1 : 0)
+    GeometryReader { geo in
+        ZStack {
+            LogoView()
+                .background(Color.clear)
+                .environmentObject(appState)
+                .environmentObject(watcher)
+                .environmentObject(blinder)
+                .environmentObject(audioPlayer)
+            blinder.shape
+              .opacity(blinder.displaying ? 1 : 0)
+        }
     }
 }
   

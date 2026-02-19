@@ -2,7 +2,7 @@
 //  AppLogo.swift
 //  PictochatFinalProject
 //
-//  Created by 2155097-050 on 2/5/26.
+//  Created by Jacob Martin on 2/5/26.
 //
 import SwiftUI
 
@@ -21,10 +21,21 @@ struct AppLogo: View {
                     .scaledToFit()
                     .foregroundStyle(
                         LinearGradient(colors: [.appPrimaryAccent,
-                                                .appPrimaryColor],
+                                                .appPrimaryAccent,
+                                                .blinderColor],
                                        startPoint: .top,
                                        endPoint: .bottom))
                     .offset(x: -frameW / 4, y: -frameH / 6)
+                
+                Image(systemName: "pencil.and.scribble")
+                    .font(.system(size: frameH / 1.75))
+                    .scaledToFit()
+                    .font(.system(size: frameH / 1.75))
+                    .offset(x: -frameW / 4, y: (-frameH / 6) - (frameH / 4.75))
+                    .foregroundStyle(LinearGradient(colors: [.white, .gray],
+                                                    startPoint: .top,
+                                                    endPoint: .bottom))
+                    .opacity(1)
                 // End Left Chat Bubble
                 
                 // Right Chat Bubble
@@ -32,10 +43,18 @@ struct AppLogo: View {
                     .scaledToFit()
                     .foregroundStyle(
                         LinearGradient(colors: [.appSecondaryAccent,
-                                                .appPrimaryColor],
+                                                .appSecondaryAccent,
+                                                .blinderColor],
                                        startPoint:  .top,
                                        endPoint: .bottom))
                     .offset(x: frameW / 4, y: frameH / 6)
+                Image(systemName: "keyboard.fill")
+                    .font(.system(size: frameH / 1.75))
+                    .offset(x: frameW / 4, y: (frameH / 6) - (frameH / 4.75))
+                    .foregroundStyle(LinearGradient(colors: [.white, .gray],
+                                                    startPoint: .top,
+                                                    endPoint: .bottom))
+                    .opacity(1)
                 //End Right Chat Bubble
             } // end main bubble ZStack
         }// end of GeometryReader

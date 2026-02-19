@@ -2,7 +2,7 @@
 //  BlinderState.swift
 //  PictochatFinalProject
 //
-//  Created by 2155097-050 on 2/17/26.
+//  Created by Jacob Martin on 2/17/26.
 //
 
 import SwiftUI
