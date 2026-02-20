@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
-    internal var appState: AppState = Environment(\.appState).wrappedValue,
-                 bgObserver: GridLineBackgroundObserver = Environment(\.bgObserver).wrappedValue,
-                 blinder: Blinder = Environment(\.blinder).wrappedValue,
-                 audioEngine: AudioEngine = Environment(\.audioEngine).wrappedValue
-                 
+    @EnvironmentObject internal var appState: AppState
+    @EnvironmentObject internal var bgObserver: GridLineBackgroundObserver
+    @EnvironmentObject internal var blinder: Blinder
+    @EnvironmentObject internal var audioEngine: AudioEngine
     
     var body: some View {
         let background = bgObserver.background
@@ -25,7 +24,12 @@ struct ContentView: View {
             // in appState
             Color.clear.onAppear {
                 appState.appFrameSize = geo.size
-                bgObserver.changeGradientsFromState(appState.currentState)
+                bgObserver
+                    .changeGradientsFromState(
+                        appState,
+                        gradientStart: .zero,
+                        gradientEnd: CGPoint(x: geo.size.width,
+                                             y: geo.size.height))
             }
             
             ZStack {
@@ -39,18 +43,36 @@ struct ContentView: View {
                 }
                 
                 // The current screen we're looking at
-                let currentView: AnyView = appState.currentView
+                switch(appState.currentState) {
+                    case .logo:
+                        LogoView()
+                    case .lobby:
+                        LobbyView()
+                    case .settings:
+                        SettingsView()
+                    default:
+                        LogoView()
+                }
                 
                 // Blinder shape to
                 // transition between screens
-                blinder.shape
-                    .foregroundStyle(Color.blinderColor)
-                    .opacity(blinder.displaying ? 1 : 0)
+                //blinder.shape
+                  //  .foregroundStyle(Color.blinderColor)
+                    //.opacity(blinder.displaying ? 1 : 0)
             }
         }
     }
 }
 
 #Preview {
+    @Previewable @StateObject var appState: AppState = AppState()
+    @Previewable @StateObject var bgObserver: GridLineBackgroundObserver = GridLineBackgroundObserver()
+    @Previewable @StateObject var blinder: Blinder = Blinder()
+    @Previewable @StateObject var audioEngine: AudioEngine = AudioEngine(soundPath: .none)
+    
     ContentView()
+        .environmentObject(appState)
+        .environmentObject(bgObserver)
+        .environmentObject(blinder)
+        .environmentObject(audioEngine)
 }

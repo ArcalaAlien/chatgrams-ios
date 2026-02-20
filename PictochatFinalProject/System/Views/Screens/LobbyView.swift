@@ -13,36 +13,45 @@ struct LobbyView: View {
         createRoom
     }
     
-    internal var appState: AppState,
-                 bgObserver: GridLineBackgroundObserver,
-                 blinder: Blinder,
-                 audioEngine: AudioEngine
-    
-    init() {
-        appState = Environment(\.appState).wrappedValue
-        bgObserver = Environment(\.bgObserver).wrappedValue
-        blinder = Environment(\.blinder).wrappedValue
-        audioEngine = Environment(\.audioEngine).wrappedValue
-    }
+    @EnvironmentObject internal var appState: AppState
+    @EnvironmentObject internal var bgObserver: GridLineBackgroundObserver
+    @EnvironmentObject internal var blinder: Blinder
+    @EnvironmentObject internal var audioEngine: AudioEngine
     
     @State private var currentTab: CurrentTab = .publicRooms
     
     var body: some View {
-        VStack {
-            Text("Hello")
+        GeometryReader { geo in
+            
+        }.onAppear() {
+            Timer.scheduledTimer(withTimeInterval: 2, repeats: false) {_ in
+                blinder.hide()
+            }
         }
-    } // End of body
+    }// End of body
 }
 
 #Preview {
-    //var bgObserver: GridLineBackgroundObserver = Environment(\.bgWatcher).wrappedValue
+    @Previewable @StateObject var appState: AppState = AppState()
+    @Previewable @StateObject var bgObserver: GridLineBackgroundObserver = GridLineBackgroundObserver()
+    @Previewable @StateObject var blinder: Blinder = Blinder()
+    @Previewable @StateObject var audioEngine: AudioEngine = AudioEngine(soundPath: .none)
     
     GeometryReader { geo in
         ZStack {
-            //bgObserver.background
+            let frameH: CGFloat = appState.appFrameSize.height,
+                frameW: CGFloat = appState.appFrameSize.width,
+                frame: CGPoint = CGPoint(x: frameW, y: frameH)
+            var bg: GridLineBackground = bgObserver.background
+            
+            bg
             LobbyView()
-            //blinder.shape
-            //  .opacity(blinder.displaying ? 1 : 0)
+                .environmentObject(appState)
+                .environmentObject(bgObserver)
+                .environmentObject(blinder)
+                .environmentObject(audioEngine)
+            blinder.shape
+                .opacity(blinder.displaying ? 1 : 0)
         }
     }
 }

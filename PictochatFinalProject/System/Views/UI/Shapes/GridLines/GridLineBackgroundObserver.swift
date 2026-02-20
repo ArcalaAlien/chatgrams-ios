@@ -19,20 +19,45 @@ class GridLineBackgroundObserver: ObservableObject {
         bottomLayerShading = .color(.black)
     }
     
-    func changeGradientsFromState (_ state: AppState.states) {
-        switch (state) {
-            case .lobby:
-                topLayerShading = .color(.red)
-                bottomLayerShading = .color(.black)
-            case .chatting:
-                topLayerShading = .color(.orange)
-                bottomLayerShading = .color(.black)
-            case .settings:
-                topLayerShading = .color(.yellow)
-                bottomLayerShading = .color(.black)
-            default:
-                topLayerShading = .color(.appGridBackgroundColor)
-                bottomLayerShading = .color(.appGridBackgroundColor)
+    func changeGradientsFromState (_ appState: AppState, gradientStart: CGPoint, gradientEnd: CGPoint) {
+        let state = appState.currentState,
+            subState = appState.currentSubState
+        
+        withAnimation(.easeInOut(duration: 2)) {
+            switch (state) {
+                case .logo:
+                    topLayerShading = .color(.blinderColor)
+                    bottomLayerShading = .color(.blinderColor)
+                case .lobby:
+                    switch(subState) {
+                        case .lobbyPublicTab:
+                            self.topLayerShading =
+                                .linearGradient(Gradient(colors: [.appPrimaryAccent,
+                                                                  .appSecondaryAccent]),
+                                                startPoint: gradientStart,
+                                                endPoint: gradientEnd)
+                            self.bottomLayerShading = .color(.black)
+                        case .lobbyPrivateTab:
+                            self.topLayerShading =
+                                .linearGradient(Gradient(colors: [.purple,
+                                                                  .appSecondaryAccent]),
+                                                startPoint: gradientStart,
+                                                endPoint: gradientEnd)
+                            self.bottomLayerShading = .color(.black)
+                        default:
+                            self.topLayerShading = .color(.black)
+                            self.bottomLayerShading = topLayerShading
+                    }
+                case .chatting:
+                    topLayerShading = .color(.orange)
+                    bottomLayerShading = .color(.black)
+                case .settings:
+                    topLayerShading = .color(.yellow)
+                    bottomLayerShading = .color(.black)
+                default:
+                    topLayerShading = .color(.appGridBackgroundColor)
+                    bottomLayerShading = .color(.appGridBackgroundColor)
+            }
         }
     }
 }

@@ -8,30 +8,28 @@ import SwiftUI
 import AVFoundation
 
 struct LogoView: View {
-    internal var appState: AppState = Environment(\.appState).wrappedValue,
-                 bgObserver: GridLineBackgroundObserver = Environment(\.bgObserver).wrappedValue,
-                 blinder: Blinder = Environment(\.blinder).wrappedValue,
-                 audioEngine: AudioEngine = Environment(\.audioEngine).wrappedValue
+    @EnvironmentObject internal var appState: AppState
+    @EnvironmentObject internal var bgObserver: GridLineBackgroundObserver
+    @EnvironmentObject internal var blinder: Blinder
+    @EnvironmentObject internal var audioEngine: AudioEngine
 
     var body: some View {
         GeometryReader { geo in
             let frameH = geo.size.height,
                 frameW = geo.size.width
             
-            VStack {
-                AppLogo()
-                AppTitle(borderWidth: 0,
-                         fontDesign: .monospaced,
-                         fontStyle: .largeTitle,
-                         fontWeight: .bold)
-            }.frame(width: frameW / 2,
-                    height: frameH / 2)
-            .offset(x: frameW / 4,
-                    y: frameH / 4)// end of Main VStack
+            ZStack {
+                VStack{
+                    AppLogo()
+                        .frame(width: frameH / 4,
+                               height: frameW / 4)
+                }
+            }
+            .offset(x: frameW / 2,
+                    y: frameH / 2)// end of Main VStack
             
         }.onAppear() {
             blinder.show()
-            print(Bundle.main.bundlePath)
             
             Timer.scheduledTimer(withTimeInterval: 4, repeats: false) {_ in
                 audioEngine.changeToFile("logo_jingle", withExtension: "mp3")
@@ -49,17 +47,22 @@ struct LogoView: View {
             } // End of Fade out timer
             
             Timer.scheduledTimer(withTimeInterval: 10, repeats: false) {_ in
-                appState.set(.lobby)
+                appState.set(.lobby, newSubState: .lobbyPrivateTab)
             } // End of state change timer
         }
     } // end of Body
 } // end of LogoView
 
 #Preview {
-    GeometryReader { geo in
-        ZStack {
-            LogoView()
-        }
-    }
+    @Previewable @StateObject var appState: AppState = AppState()
+    @Previewable @StateObject var bgObserver: GridLineBackgroundObserver = GridLineBackgroundObserver()
+    @Previewable @StateObject var blinder: Blinder = Blinder()
+    @Previewable @StateObject var audioEngine: AudioEngine = AudioEngine(soundPath: .none)
+    
+    LogoView()
+        .environmentObject(appState)
+        .environmentObject(bgObserver)
+        .environmentObject(blinder)
+        .environmentObject(audioEngine)
 }
   

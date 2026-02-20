@@ -27,8 +27,12 @@ struct AppLogo: View {
                                        endPoint: .bottom))
                     .offset(x: -frameW / 4, y: -frameH / 6)
                 
+                // TODO: Find easier way to do this
                 Image(systemName: "pencil.and.scribble")
-                    .font(.system(size: frameH / 1.75))
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: frameW,
+                           height: frameH / 2.25)
                     .scaledToFit()
                     .font(.system(size: frameH / 1.75))
                     .offset(x: -frameW / 4, y: (-frameH / 6) - (frameH / 4.75))
@@ -49,7 +53,10 @@ struct AppLogo: View {
                                        endPoint: .bottom))
                     .offset(x: frameW / 4, y: frameH / 6)
                 Image(systemName: "keyboard.fill")
-                    .font(.system(size: frameH / 1.75))
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: frameW,
+                           height: frameH / 2.25)
                     .offset(x: frameW / 4, y: (frameH / 6) - (frameH / 4.75))
                     .foregroundStyle(LinearGradient(colors: [.white, .gray],
                                                     startPoint: .top,

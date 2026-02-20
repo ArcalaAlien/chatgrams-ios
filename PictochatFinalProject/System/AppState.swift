@@ -11,29 +11,29 @@ class AppState: ObservableObject {
     enum states: Int {
         case logo = 0,
         lobby,
+        lobbyCreation,
         settings,
         chatting
+    }
+    
+    enum subStates: Int {
+        case none = -1,
+        lobbyPublicTab,
+        lobbyPrivateTab
     }
 
     @Published var appFrameSize: CGSize
     @Published var currentState: states
-    @Published @State var currentView: AnyView
+    @Published var currentSubState: subStates
     
     init() {
         appFrameSize = .zero
-        currentView = AnyView(LogoView())
         currentState = .logo
+        currentSubState = .none
     }
     
-    func set(_ newState: states) {
+    func set(_ newState: states, newSubState: subStates = .none) {
         currentState = newState
-        switch(currentState) {
-            case .logo:
-                currentView = AnyView(LogoView())
-            case .lobby:
-                currentView = AnyView(LobbyView())
-            default:
-                currentView = AnyView(LogoView())
-        } // end of switch
+        currentSubState = newSubState
     } // end of update function
 }

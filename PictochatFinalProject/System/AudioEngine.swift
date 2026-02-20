@@ -82,6 +82,10 @@ final class AudioEngine: ObservableObject {
     }
     
     private func startTrackingTime() {
+        if (timer != nil) {
+            stopTrackingTime()
+        }
+        
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) {_ in
             self.currentTime = self.player?.currentTime ?? 0
         }
@@ -89,6 +93,7 @@ final class AudioEngine: ObservableObject {
     
     private func stopTrackingTime() {
         if timer != nil {
+            timer?.invalidate()
             timer = nil
         }
             
