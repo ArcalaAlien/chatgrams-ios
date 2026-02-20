@@ -19,6 +19,7 @@ struct AppLogo: View {
                 ChatBubble()
                     .rotation3DEffect(Angle.degrees(180), axis: (x: 0, y: 1, z: 0))
                     .scaledToFit()
+                    .shadow(radius: 2)
                     .foregroundStyle(
                         LinearGradient(colors: [.appPrimaryAccent,
                                                 .appPrimaryAccent,
@@ -45,6 +46,7 @@ struct AppLogo: View {
                 // Right Chat Bubble
                 ChatBubble()
                     .scaledToFit()
+                    .shadow(radius: 2)
                     .foregroundStyle(
                         LinearGradient(colors: [.appSecondaryAccent,
                                                 .appSecondaryAccent,

@@ -35,7 +35,6 @@ struct ChatBubble: Shape {
 
 #Preview {
     ZStack {
-        Rectangle().fill(Color.blue)
         ChatBubble()
             .foregroundStyle(Color.red)
     }.frame(width: 300, height: 300)

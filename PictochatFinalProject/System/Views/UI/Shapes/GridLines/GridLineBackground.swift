@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GridLineBackground: View {
-    @Environment(\.appState) internal var appState: AppState
+    @EnvironmentObject internal var appState: AppState
     
     internal var bottomLayer: GridLines = GridLines(),
                  topLayer: GridLines = GridLines(),
@@ -95,7 +95,7 @@ struct GridLineBackground: View {
 }
 
 #Preview {
-    @Previewable @Environment(\.appState) var appState: AppState
+    @Previewable @StateObject var appState: AppState = AppState()
     let frameH = appState.appFrameSize.height,
         frameW = appState.appFrameSize.width
     
@@ -109,6 +109,7 @@ struct GridLineBackground: View {
                 .bottomCellSize(CGSize(width: frameW * 2, height: frameH * 2))
                 .topShading(.color(.black))
                 .bottomShading(.color(.green))
+                .environmentObject(appState)
         }
-    }.environmentObject(appState)
+    }
 }

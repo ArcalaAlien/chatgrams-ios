@@ -24,6 +24,8 @@ struct LobbyView: View {
         GeometryReader { geo in
             
         }.onAppear() {
+            blinder.show()
+            
             Timer.scheduledTimer(withTimeInterval: 2, repeats: false) {_ in
                 blinder.hide()
             }
