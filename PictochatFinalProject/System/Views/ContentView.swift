@@ -8,20 +8,24 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var appState: AppState = AppState()
-    @StateObject private var backgroundWatcher: GridLineBackgroundWatcher = GridLineBackgroundWatcher()
-    @StateObject private var blinder: Blinder = Blinder()
-    @StateObject private var audioPlayer: AudioEngine = AudioEngine(soundPath: .none)
+    internal var appState: AppState = Environment(\.appState).wrappedValue,
+                 bgObserver: GridLineBackgroundObserver = Environment(\.bgObserver).wrappedValue,
+                 blinder: Blinder = Environment(\.blinder).wrappedValue,
+                 audioEngine: AudioEngine = Environment(\.audioEngine).wrappedValue
+                 
     
     var body: some View {
-        let background = backgroundWatcher.background
+        let background = bgObserver.background
 
         GeometryReader { geo in
+            let frameH = geo.size.height,
+                frameW = geo.size.width
+            
             // Capturing the main view's size to pass through
             // in appState
             Color.clear.onAppear {
-                self.appState.appFrameSize = geo.size
-                backgroundWatcher.topLayerShading = .linearGradient(Gradient(colors: [.appPrimaryAccent, .appSecondaryColor]), startPoint: .zero, endPoint: CGPoint(x: geo.size.width, y: geo.size.height))
+                appState.appFrameSize = geo.size
+                bgObserver.changeGradientsFromState(appState.currentState)
             }
             
             ZStack {
@@ -29,17 +33,13 @@ struct ContentView: View {
                 // then we can use the grid background
                 if (appState.currentState != .logo) {
                     background
-                        .topShading(backgroundWatcher.topLayerShading)
-                        .bottomShading(backgroundWatcher.bottomLayerShading)
+                        .bottomCellSize(CGSize(width: frameW * 2, height: frameH * 2))
+                        .topShading(bgObserver.topLayerShading)
+                        .bottomShading(bgObserver.bottomLayerShading)
                 }
                 
                 // The current screen we're looking at
-                appState.currentView
-                    .background(Color.clear)
-                    .environmentObject(appState)
-                    .environmentObject(backgroundWatcher)
-                    .environmentObject(blinder)
-                    .environmentObject(audioPlayer)
+                let currentView: AnyView = appState.currentView
                 
                 // Blinder shape to
                 // transition between screens
@@ -52,21 +52,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    @Previewable @StateObject var appState: AppState = AppState()
-    @Previewable @StateObject var watcher: GridLineBackgroundWatcher = GridLineBackgroundWatcher()
-    @Previewable @StateObject var blinder: Blinder = Blinder()
-    @Previewable @StateObject var audioPlayer: AudioEngine = AudioEngine(soundPath: .none)
-    
-    GeometryReader { geo in
-        ZStack {
-            ContentView()
-                .background(Color.clear)
-                .environmentObject(appState)
-                .environmentObject(watcher)
-                .environmentObject(blinder)
-                .environmentObject(audioPlayer)
-            //blinder.shape
-            //  .opacity(blinder.displaying ? 1 : 0)
-        }
-    }
+    ContentView()
 }

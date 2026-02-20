@@ -13,37 +13,34 @@ struct LobbyView: View {
         createRoom
     }
     
-    @EnvironmentObject private var appState: AppState
-    @EnvironmentObject private var backgroundWatcher: GridLineBackgroundWatcher
-    @EnvironmentObject private var blinder: Blinder
-    @EnvironmentObject private var audioPlayer: AudioEngine
+    internal var appState: AppState,
+                 bgObserver: GridLineBackgroundObserver,
+                 blinder: Blinder,
+                 audioEngine: AudioEngine
+    
+    init() {
+        appState = Environment(\.appState).wrappedValue
+        bgObserver = Environment(\.bgObserver).wrappedValue
+        blinder = Environment(\.blinder).wrappedValue
+        audioEngine = Environment(\.audioEngine).wrappedValue
+    }
     
     @State private var currentTab: CurrentTab = .publicRooms
     
     var body: some View {
-        GeometryReader { geo in
-            
+        VStack {
+            Text("Hello")
         }
     } // End of body
 }
 
 #Preview {
-    @Previewable @StateObject var appState: AppState = AppState()
-    @Previewable @StateObject var watcher: GridLineBackgroundWatcher = GridLineBackgroundWatcher()
-    @Previewable @StateObject var blinder: Blinder = Blinder()
-    @Previewable @StateObject var audioPlayer: AudioEngine = AudioEngine(soundPath: .none)
+    //var bgObserver: GridLineBackgroundObserver = Environment(\.bgWatcher).wrappedValue
     
     GeometryReader { geo in
         ZStack {
-            watcher.background
-                .topShading(watcher.topLayerShading)
-                .bottomShading(watcher.bottomLayerShading)
+            //bgObserver.background
             LobbyView()
-                .background(Color.clear)
-                .environmentObject(appState)
-                .environmentObject(watcher)
-                .environmentObject(blinder)
-                .environmentObject(audioPlayer)
             //blinder.shape
             //  .opacity(blinder.displaying ? 1 : 0)
         }

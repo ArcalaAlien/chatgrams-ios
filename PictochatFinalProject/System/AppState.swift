@@ -8,19 +8,16 @@ import SwiftUI
 internal import Combine
 
 class AppState: ObservableObject {
-    @EnvironmentObject var watcher: GridLineBackgroundWatcher
-    @EnvironmentObject var blinder: Blinder
-    
     enum states: Int {
         case logo = 0,
         lobby,
         settings,
         chatting
     }
-    
+
     @Published var appFrameSize: CGSize
-    @Published var currentView: AnyView
     @Published var currentState: states
+    @Published @State var currentView: AnyView
     
     init() {
         appFrameSize = .zero
@@ -34,9 +31,7 @@ class AppState: ObservableObject {
             case .logo:
                 currentView = AnyView(LogoView())
             case .lobby:
-                currentView = AnyView(LobbyView()
-                                                .environmentObject(blinder)
-                                                .environmentObject(watcher))
+                currentView = AnyView(LobbyView())
             default:
                 currentView = AnyView(LogoView())
         } // end of switch

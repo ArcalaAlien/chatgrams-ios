@@ -8,10 +8,10 @@ import SwiftUI
 import AVFoundation
 
 struct LogoView: View {
-    @EnvironmentObject private var appState: AppState
-    @EnvironmentObject private var backgroundWatcher: GridLineBackgroundWatcher
-    @EnvironmentObject private var blinder: Blinder
-    @EnvironmentObject private var audioPlayer: AudioEngine
+    internal var appState: AppState = Environment(\.appState).wrappedValue,
+                 bgObserver: GridLineBackgroundObserver = Environment(\.bgObserver).wrappedValue,
+                 blinder: Blinder = Environment(\.blinder).wrappedValue,
+                 audioEngine: AudioEngine = Environment(\.audioEngine).wrappedValue
 
     var body: some View {
         GeometryReader { geo in
@@ -28,15 +28,16 @@ struct LogoView: View {
                     height: frameH / 2)
             .offset(x: frameW / 4,
                     y: frameH / 4)// end of Main VStack
+            
         }.onAppear() {
             blinder.show()
             print(Bundle.main.bundlePath)
             
             Timer.scheduledTimer(withTimeInterval: 4, repeats: false) {_ in
-                audioPlayer.changeToFile("logo_jingle", withExtension: "mp3")
+                audioEngine.changeToFile("logo_jingle", withExtension: "mp3")
                 
                 withAnimation(.easeInOut(duration: 2)) {
-                    audioPlayer.play()
+                    audioEngine.play()
                     blinder.hide()
                 }
             }
@@ -55,21 +56,9 @@ struct LogoView: View {
 } // end of LogoView
 
 #Preview {
-    @Previewable @StateObject var appState: AppState = AppState()
-    @Previewable @StateObject var watcher: GridLineBackgroundWatcher = GridLineBackgroundWatcher()
-    @Previewable @StateObject var blinder: Blinder = Blinder()
-    @Previewable @StateObject var audioPlayer: AudioEngine = AudioEngine(soundPath: .none)
-    
     GeometryReader { geo in
         ZStack {
             LogoView()
-                .background(Color.clear)
-                .environmentObject(appState)
-                .environmentObject(watcher)
-                .environmentObject(blinder)
-                .environmentObject(audioPlayer)
-            blinder.shape
-              .opacity(blinder.displaying ? 1 : 0)
         }
     }
 }

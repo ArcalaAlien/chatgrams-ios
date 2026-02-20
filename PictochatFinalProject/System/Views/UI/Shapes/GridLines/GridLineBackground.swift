@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct GridLineBackground: View {
-    internal let bottomLayer: GridLines = GridLines(),
-                 topLayer: GridLines = GridLines()
+    @EnvironmentObject var appState: AppState
     
-    internal var bottomLayerShading: GraphicsContext.Shading
-    internal var topLayerShading: GraphicsContext.Shading
+    internal var bottomLayer: GridLines = GridLines(),
+                 topLayer: GridLines = GridLines(),
+                 bottomLayerShading: GraphicsContext.Shading,
+                 topLayerShading: GraphicsContext.Shading
         
     init() {
         bottomLayerShading = .color(.black)
@@ -68,6 +69,18 @@ struct GridLineBackground: View {
         }
     }
     
+    func bottomCellSize(_ size: CGSize) -> GridLineBackground {
+        var copy = self
+        copy.bottomLayer = bottomLayer.cellSize(calculateCellSize(cellSize: size, frameSize: appState.appFrameSize))
+        return copy
+    }
+    func topCellSize(_ size: CGSize) -> GridLineBackground {
+        var copy = self
+        copy.topLayer =
+            topLayer.cellSize(calculateCellSize(cellSize: size, frameSize: appState.appFrameSize))
+        return copy
+    }
+    
     func bottomShading(_ shading: GraphicsContext.Shading) -> GridLineBackground {
         var copy = self
         copy.bottomLayerShading = shading
@@ -82,8 +95,20 @@ struct GridLineBackground: View {
 }
 
 #Preview {
-    GridLineBackground()
-        .topShading(.color(.black))
-        .bottomShading(.color(.green))
+    @Previewable @StateObject var appState: AppState = AppState()
+    let frameH = appState.appFrameSize.height,
+        frameW = appState.appFrameSize.width
+    
+    GeometryReader { geo in
+        ZStack{
+            Color.clear.onAppear {
+                appState.appFrameSize = geo.size
+            }
             
+            GridLineBackground()
+                .bottomCellSize(CGSize(width: frameW * 2, height: frameH * 2))
+                .topShading(.color(.black))
+                .bottomShading(.color(.green))
+        }
+    }.environmentObject(appState)
 }
