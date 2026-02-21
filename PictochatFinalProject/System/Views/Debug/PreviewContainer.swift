@@ -35,6 +35,10 @@ struct PreviewContainer<Content: View>: View {
                     .environmentObject(audioEngine)
                 createDebugStateChanger()
                     .offset(y: -geo.size.height / 2.25)
+                    .environmentObject(appState)
+                    .environmentObject(blinder)
+                    .environmentObject(bgObserver)
+                    .environmentObject(audioEngine)
             }
         }
     }

@@ -19,15 +19,15 @@ struct LobbyView: View {
     @EnvironmentObject internal var blinder: Blinder
     @EnvironmentObject internal var audioEngine: AudioEngine
     
-    @State private var currentTab: CurrentTab = .publicRooms
     
     var body: some View {
         GeometryReader { geo in
-            
-        }.onAppear() {
+            Rectangle()
+        }.task {
             blinder.show()
             
-            Timer.scheduledTimer(withTimeInterval: 2, repeats: false) {_ in
+            try? await Task.sleep(for: .seconds(2))
+            withAnimation(.easeInOut(duration: 2)) {
                 blinder.hide()
             }
         }

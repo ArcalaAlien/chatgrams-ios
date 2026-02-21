@@ -97,21 +97,8 @@ struct LogoView: View {
 } // end of LogoView
 
 #Preview {
-    @Previewable @StateObject var appState: AppState = AppState()
-    @Previewable @StateObject var bgObserver: GridLineBackgroundObserver = GridLineBackgroundObserver()
-    @Previewable @StateObject var blinder: Blinder = Blinder()
-    @Previewable @StateObject var audioEngine: AudioEngine = AudioEngine(soundPath: .none)
-    
-    GeometryReader { geo in
-        ZStack {
-            LogoView()
-                .environmentObject(appState)
-                .environmentObject(bgObserver)
-                .environmentObject(blinder)
-                .environmentObject(audioEngine)
-            blinder.shape
-                .opacity(blinder.displaying ? 1 : 0)
-        }
+    PreviewContainer {
+        LogoView()
     }
 }
   

@@ -9,7 +9,6 @@ import SwiftUI
 internal import Combine
 
 class GridLineBackgroundObserver: ObservableObject {
-    @Environment(\.appTheme) var appTheme: AppTheme
     @Published internal var background: GridLineBackground
     @Published var topLayerShading: GraphicsContext.Shading
     @Published var bottomLayerShading: GraphicsContext.Shading
@@ -20,7 +19,7 @@ class GridLineBackgroundObserver: ObservableObject {
         bottomLayerShading = .color(.black)
     }
     
-    func changeGradientsFromState (_ appState: AppState, gradientStart: CGPoint, gradientEnd: CGPoint) {
+    func changeGradientsFromState (_ appState: AppState, appTheme: AppTheme, gradientStart: CGPoint, gradientEnd: CGPoint) {
         let state = appState.state,
             subState = appState.subState
         

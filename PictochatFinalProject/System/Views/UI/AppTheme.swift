@@ -27,7 +27,7 @@ struct AppTheme {
                                 
                                 // Orange
                                 accentTwo: Color(red: channelAsDouble(230),
-                                                 green: channelAsDouble(100),
+                                                 green: channelAsDouble(150),
                                                  blue: 0),
                                 // Green-cyan
                                 accentThree: Color(red: 0,

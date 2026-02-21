@@ -29,6 +29,7 @@ struct ContentView: View {
                     bgObserver
                         .changeGradientsFromState(
                             appState,
+                            appTheme: appTheme,
                             gradientStart: .zero,
                             gradientEnd: CGPoint(x: geo.size.width,
                                                  y: geo.size.height))
@@ -37,6 +38,7 @@ struct ContentView: View {
                     bgObserver
                         .changeGradientsFromState(
                             appState,
+                            appTheme: appTheme,
                             gradientStart: .zero,
                             gradientEnd: CGPoint(x: geo.size.width,
                                                  y: geo.size.height))
@@ -50,7 +52,6 @@ struct ContentView: View {
                         .topShading(bgObserver.topLayerShading)
                         .bottomShading(bgObserver.bottomLayerShading)
                 }
-                
                 
                 // The current screen we're looking at
                 switch(appState.state) {
