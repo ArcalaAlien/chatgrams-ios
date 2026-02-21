@@ -8,6 +8,7 @@ import SwiftUI
 import AVFoundation
 
 struct LogoView: View {
+    @Environment(\.appTheme) internal var appTheme: AppTheme
     @EnvironmentObject internal var appState: AppState
     @EnvironmentObject internal var bgObserver: GridLineBackgroundObserver
     @EnvironmentObject internal var blinder: Blinder
@@ -30,7 +31,7 @@ struct LogoView: View {
                     .background(
                         LinearGradient(
                             colors: [.accentColor,
-                                     .appGridBackgroundColor],
+                                     appTheme.blinder],
                             startPoint: .top,
                             endPoint: .bottom)
                     )
@@ -101,14 +102,16 @@ struct LogoView: View {
     @Previewable @StateObject var blinder: Blinder = Blinder()
     @Previewable @StateObject var audioEngine: AudioEngine = AudioEngine(soundPath: .none)
     
-    ZStack {
-        LogoView()
-            .environmentObject(appState)
-            .environmentObject(bgObserver)
-            .environmentObject(blinder)
-            .environmentObject(audioEngine)
-        blinder.shape
-          .opacity(blinder.displaying ? 1 : 0)
+    GeometryReader { geo in
+        ZStack {
+            LogoView()
+                .environmentObject(appState)
+                .environmentObject(bgObserver)
+                .environmentObject(blinder)
+                .environmentObject(audioEngine)
+            blinder.shape
+                .opacity(blinder.displaying ? 1 : 0)
+        }
     }
 }
   

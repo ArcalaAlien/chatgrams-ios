@@ -16,7 +16,7 @@ class AppState: ObservableObject {
         case settings
         case chatting
         
-        mutating func next() {
+        mutating func next() -> AppState.State {
             // Return an updated version of myself
             //
             // Starting by getting an array of all
@@ -37,15 +37,18 @@ class AppState: ObservableObject {
             if (!atMax) {
                 self = allStates[(allStates.firstIndex(of: self)! + 1) % allStates.count]
             }
+            return self
         }
         
-        mutating func previous() {
+        mutating func previous() -> AppState.State {
             let allStates = Self.allCases,
                 atMin = (allStates.firstIndex(of: self) == 0)
             
             if (!atMin) {
                 self = allStates[(allStates.firstIndex(of: self)! - 1)]
             }
+            
+            return self
         }
     }
     
@@ -56,17 +59,17 @@ class AppState: ObservableObject {
     }
 
     @Published var appFrameSize: CGSize
-    @Published var currentState: State
-    @Published var currentSubState: SubState
+    @Published var state: State
+    @Published var subState: SubState
     
     init() {
         appFrameSize = .zero
-        currentState = .logo
-        currentSubState = .none
+        state = .logo
+        subState = .none
     }
     
     func set(_ state: State, subState: SubState = .none) {
-        currentState = state
-        currentSubState = subState
+        self.state = state
+        self.subState = subState
     } // end of update function
 }

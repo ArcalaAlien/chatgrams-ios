@@ -9,6 +9,7 @@ import SwiftUI
 internal import Combine
 
 class GridLineBackgroundObserver: ObservableObject {
+    @Environment(\.appTheme) var appTheme: AppTheme
     @Published internal var background: GridLineBackground
     @Published var topLayerShading: GraphicsContext.Shading
     @Published var bottomLayerShading: GraphicsContext.Shading
@@ -20,27 +21,27 @@ class GridLineBackgroundObserver: ObservableObject {
     }
     
     func changeGradientsFromState (_ appState: AppState, gradientStart: CGPoint, gradientEnd: CGPoint) {
-        let state = appState.currentState,
-            subState = appState.currentSubState
+        let state = appState.state,
+            subState = appState.subState
         
         withAnimation(.easeInOut(duration: 2)) {
             switch (state) {
                 case .logo:
-                    topLayerShading = .color(.blinderColor)
-                    bottomLayerShading = .color(.blinderColor)
+                    topLayerShading = .color(appTheme.blinder)
+                    bottomLayerShading = .color(appTheme.blinder)
                 case .lobby:
                     switch(subState) {
                         case .lobbyPublicTab:
                             self.topLayerShading =
-                                .linearGradient(Gradient(colors: [.appPrimaryAccent,
-                                                                  .appSecondaryAccent]),
+                            .linearGradient(Gradient(colors: [appTheme.accentOne,
+                                                              appTheme.accentTwo]),
                                                 startPoint: gradientStart,
                                                 endPoint: gradientEnd)
                             self.bottomLayerShading = .color(.black)
                         case .lobbyPrivateTab:
                             self.topLayerShading =
-                                .linearGradient(Gradient(colors: [.purple,
-                                                                  .appSecondaryAccent]),
+                            .linearGradient(Gradient(colors: [appTheme.accentOne,
+                                                              appTheme.accentTwo]),
                                                 startPoint: gradientStart,
                                                 endPoint: gradientEnd)
                             self.bottomLayerShading = .color(.black)
@@ -55,8 +56,8 @@ class GridLineBackgroundObserver: ObservableObject {
                     topLayerShading = .color(.yellow)
                     bottomLayerShading = .color(.black)
                 default:
-                    topLayerShading = .color(.appGridBackgroundColor)
-                    bottomLayerShading = .color(.appGridBackgroundColor)
+                topLayerShading = .color(appTheme.blinder)
+                bottomLayerShading = .color(appTheme.blinder)
             }
         }
     }

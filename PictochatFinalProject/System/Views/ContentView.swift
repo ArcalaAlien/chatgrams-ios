@@ -8,12 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.appTheme) var appTheme: AppTheme
     @EnvironmentObject internal var appState: AppState
     @EnvironmentObject internal var bgObserver: GridLineBackgroundObserver
     @EnvironmentObject internal var blinder: Blinder
     @EnvironmentObject internal var audioEngine: AudioEngine
-    
-    @State private var appCurrentState: AppState.State? = .logo
     
     var body: some View {
         let background = bgObserver.background
@@ -27,19 +26,25 @@ struct ContentView: View {
                 // in appState
                 Color.clear.onAppear {
                     appState.appFrameSize = geo.size
-                    appCurrentState = appState.currentState
                     bgObserver
                         .changeGradientsFromState(
                             appState,
                             gradientStart: .zero,
                             gradientEnd: CGPoint(x: geo.size.width,
                                                  y: geo.size.height))
-                    print("Current State: \(appCurrentState ?? .none)")
+                }
+                .onChange(of: appState.state) { _,_ in
+                    bgObserver
+                        .changeGradientsFromState(
+                            appState,
+                            gradientStart: .zero,
+                            gradientEnd: CGPoint(x: geo.size.width,
+                                                 y: geo.size.height))
                 }
                 
                 // If we're not on the logo
                 // then we can use the grid background
-                if (appCurrentState != .logo) {
+                if (appState.state != .logo) {
                     background
                         .bottomCellSize(CGSize(width: frameW * 2, height: frameH * 2))
                         .topShading(bgObserver.topLayerShading)
@@ -48,7 +53,7 @@ struct ContentView: View {
                 
                 
                 // The current screen we're looking at
-                switch(appCurrentState) {
+                switch(appState.state) {
                     case .logo:
                         LogoView()
                     case .lobby:
@@ -62,7 +67,7 @@ struct ContentView: View {
                 // Blinder shape to
                 // transition between screens
                 blinder.shape
-                    .foregroundStyle(Color.blinderColor)
+                    .foregroundStyle(appTheme.blinder)
                     .opacity(blinder.displaying ? 1 : 0)
             }
         }
@@ -71,8 +76,6 @@ struct ContentView: View {
 
 #Preview {
     PreviewContainer() {
-        GeometryReader { geo in
-            ContentView()
-        }
+        ContentView()
     }
 }

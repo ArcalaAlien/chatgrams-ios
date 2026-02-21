@@ -13,6 +13,7 @@ struct LobbyView: View {
         createRoom
     }
     
+    @Environment(\.appTheme) var appTheme: AppTheme
     @EnvironmentObject internal var appState: AppState
     @EnvironmentObject internal var bgObserver: GridLineBackgroundObserver
     @EnvironmentObject internal var blinder: Blinder
@@ -34,26 +35,7 @@ struct LobbyView: View {
 }
 
 #Preview {
-    @Previewable @StateObject var appState: AppState = AppState()
-    @Previewable @StateObject var bgObserver: GridLineBackgroundObserver = GridLineBackgroundObserver()
-    @Previewable @StateObject var blinder: Blinder = Blinder()
-    @Previewable @StateObject var audioEngine: AudioEngine = AudioEngine(soundPath: .none)
-    
-    GeometryReader { geo in
-        ZStack {
-            let frameH: CGFloat = appState.appFrameSize.height,
-                frameW: CGFloat = appState.appFrameSize.width,
-                frame: CGPoint = CGPoint(x: frameW, y: frameH)
-            var bg: GridLineBackground = bgObserver.background
-            
-            bg
-            LobbyView()
-                .environmentObject(appState)
-                .environmentObject(bgObserver)
-                .environmentObject(blinder)
-                .environmentObject(audioEngine)
-            blinder.shape
-                .opacity(blinder.displaying ? 1 : 0)
-        }
+    PreviewContainer() {
+        LobbyView()
     }
 }

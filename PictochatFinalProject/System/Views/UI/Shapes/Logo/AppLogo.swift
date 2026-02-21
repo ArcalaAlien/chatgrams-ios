@@ -7,6 +7,8 @@
 import SwiftUI
 
 struct AppLogo: View {
+    @Environment(\.appTheme) var appTheme: AppTheme
+    
     var body: some View {
         // MARK: - Logo GeometryReader Start
         GeometryReader { geo in
@@ -21,9 +23,9 @@ struct AppLogo: View {
                     .scaledToFit()
                     .shadow(radius: 2)
                     .foregroundStyle(
-                        LinearGradient(colors: [.appPrimaryAccent,
-                                                .appPrimaryAccent,
-                                                .blinderColor],
+                        LinearGradient(colors: [appTheme.accentOne,
+                                                appTheme.accentOne,
+                                                appTheme.blinder],
                                        startPoint: .top,
                                        endPoint: .bottom))
                     .offset(x: -frameW / 4, y: -frameH / 6)
@@ -48,9 +50,9 @@ struct AppLogo: View {
                     .scaledToFit()
                     .shadow(radius: 2)
                     .foregroundStyle(
-                        LinearGradient(colors: [.appSecondaryAccent,
-                                                .appSecondaryAccent,
-                                                .blinderColor],
+                        LinearGradient(colors: [appTheme.accentTwo,
+                                                appTheme.accentTwo,
+                                                appTheme.blinder],
                                        startPoint:  .top,
                                        endPoint: .bottom))
                     .offset(x: frameW / 4, y: frameH / 6)

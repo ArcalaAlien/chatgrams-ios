@@ -14,14 +14,9 @@ struct SettingsView: View {
 }
 
 #Preview {
-    @Previewable @StateObject var appState: AppState = AppState()
-    @Previewable @StateObject var bgObserver: GridLineBackgroundObserver = GridLineBackgroundObserver()
-    @Previewable @StateObject var blinder: Blinder = Blinder()
-    @Previewable @StateObject var audioEngine: AudioEngine = AudioEngine(soundPath: .none)
-    
-    SettingsView()
-        .environmentObject(appState)
-        .environmentObject(bgObserver)
-        .environmentObject(blinder)
-        .environmentObject(audioEngine)
+    PreviewContainer() {
+        GeometryReader { geo in
+            SettingsView()
+        }
+    }
 }

@@ -44,16 +44,16 @@ class Blinder: ObservableObject {
 
 
 #Preview {
-    @Previewable @Environment(\.colorScheme) var colorScheme
+    @Previewable @Environment(\.appTheme) var appTheme: AppTheme
     @Previewable @StateObject var blinder: Blinder = Blinder()
     
     VStack {
         ZStack {
             Circle()
-                .foregroundStyle(Color.teal)
+                .foregroundStyle(appTheme.accentThree)
             
             blinder.shape
-                .foregroundStyle(Color.blinderColor)
+                .foregroundStyle(appTheme.blinder)
                 .opacity(blinder.displaying ? 1 : 0)
         }.frame(width: 300,
                 height: 300)
