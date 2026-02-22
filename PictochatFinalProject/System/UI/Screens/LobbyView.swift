@@ -6,13 +6,7 @@
 //
 import SwiftUI
 
-struct LobbyView: View {
-    enum CurrentTab: Int {
-        case publicRooms = 0,
-        privateRooms,
-        createRoom
-    }
-    
+struct LobbyView: View {    
     @Environment(\.appTheme) var appTheme: AppTheme
     @EnvironmentObject internal var appState: AppState
     @EnvironmentObject internal var bgObserver: GridLineBackgroundObserver
@@ -22,7 +16,7 @@ struct LobbyView: View {
     
     var body: some View {
         GeometryReader { geo in
-            Rectangle()
+            Text("Hello!")
         }.task {
             blinder.show()
             
@@ -35,7 +29,11 @@ struct LobbyView: View {
 }
 
 #Preview {
-    PreviewContainer() {
+    @Previewable @State var preview: PreviewContainer = PreviewContainer() {
         LobbyView()
+    }
+    
+    preview.task {
+        preview.changeStateTo(.lobby, .publicGroups)
     }
 }

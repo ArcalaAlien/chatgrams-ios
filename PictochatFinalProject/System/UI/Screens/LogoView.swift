@@ -31,7 +31,7 @@ struct LogoView: View {
                     .background(
                         LinearGradient(
                             colors: [.accentColor,
-                                     appTheme.blinder],
+                                     appTheme.background],
                             startPoint: .top,
                             endPoint: .bottom)
                     )
@@ -77,7 +77,7 @@ struct LogoView: View {
             try? await Task.sleep(for: .seconds(2))
             
             // Switch screens!
-            appState.set(.lobby, subState: .lobbyPublicTab)
+            appState.set(.lobby)
         }
     } // end of Body
     

@@ -8,19 +8,22 @@
 import SwiftUI
 
 struct GridLineBackground: View {
-    @EnvironmentObject internal var appState: AppState
-    
     internal var bottomLayer: GridLines = GridLines(),
                  topLayer: GridLines = GridLines(),
                  bottomLayerShading: GraphicsContext.Shading,
                  topLayerShading: GraphicsContext.Shading
+                 
+    @State internal var parentFrameSize: CGSize = CGSize(width: 100, height: 100)
         
     init() {
         bottomLayerShading = .color(.black)
         topLayerShading = .color(.black)
+        parentFrameSize = CGSize(width: 1, height: 1)
     }
     
-    internal init(topShading: GraphicsContext.Shading,
+    
+    internal init(parentFrameSize: CGSize,
+                  topShading: GraphicsContext.Shading,
                   bottomShading: GraphicsContext.Shading) {
         topLayerShading = topShading
         bottomLayerShading = bottomShading
@@ -30,14 +33,13 @@ struct GridLineBackground: View {
         GeometryReader { geo in
             let frameH = geo.size.height,
                 frameW = geo.size.width
-            
+        
             ZStack {
                 bottomLayer
                     .scrollStyle(GridScrollStyle(scrollAngle: Angle(degrees: -22.5),                                scrollSpeed: 10))
                     .cellSize(calculateCellSize(cellSize: CGSize(width: frameW / 3,
                                                                  height: frameH / 3),
-                                                frameSize: CGSize(width: frameW,
-                                                                  height: frameH)))
+                                                frameSize: geo.size))
                     .gridOffset(CGPoint(x: frameW / 5, y: .zero))
                     .lineShading(bottomLayerShading)
                 
@@ -46,9 +48,10 @@ struct GridLineBackground: View {
                                                  scrollSpeed: 17))
                     .cellSize(calculateCellSize(cellSize: CGSize(width: frameW / 3,
                                                                  height: frameH / 3),
-                                                frameSize: CGSize(width: frameW,
-                                                                  height: frameH)))
+                                                frameSize: geo.size))
                     .lineShading(topLayerShading)
+            }.task {
+                parentFrameSize = geo.size
             }
         }
         .background(Color.clear)
@@ -71,13 +74,13 @@ struct GridLineBackground: View {
     
     func bottomCellSize(_ size: CGSize) -> GridLineBackground {
         var copy = self
-        copy.bottomLayer = bottomLayer.cellSize(calculateCellSize(cellSize: size, frameSize: appState.appFrameSize))
+        copy.bottomLayer = bottomLayer.cellSize(calculateCellSize(cellSize: size, frameSize: parentFrameSize))
         return copy
     }
     func topCellSize(_ size: CGSize) -> GridLineBackground {
         var copy = self
         copy.topLayer =
-            topLayer.cellSize(calculateCellSize(cellSize: size, frameSize: appState.appFrameSize))
+            topLayer.cellSize(calculateCellSize(cellSize: size, frameSize: parentFrameSize))
         return copy
     }
     
@@ -95,21 +98,14 @@ struct GridLineBackground: View {
 }
 
 #Preview {
-    @Previewable @StateObject var appState: AppState = AppState()
-    let frameH = appState.appFrameSize.height,
-        frameW = appState.appFrameSize.width
-    
     GeometryReader { geo in
+        let frameH: CGFloat = geo.size.height,
+            frameW: CGFloat = geo.size.width
         ZStack{
-            Color.clear.onAppear {
-                appState.appFrameSize = geo.size
-            }
-            
             GridLineBackground()
                 .bottomCellSize(CGSize(width: frameW * 2, height: frameH * 2))
                 .topShading(.color(.black))
                 .bottomShading(.color(.green))
-                .environmentObject(appState)
         }
     }
 }

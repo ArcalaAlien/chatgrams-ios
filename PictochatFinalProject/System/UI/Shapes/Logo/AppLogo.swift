@@ -25,7 +25,7 @@ struct AppLogo: View {
                     .foregroundStyle(
                         LinearGradient(colors: [appTheme.accentOne,
                                                 appTheme.accentOne,
-                                                appTheme.blinder],
+                                                appTheme.background],
                                        startPoint: .top,
                                        endPoint: .bottom))
                     .offset(x: -frameW / 4, y: -frameH / 6)
@@ -52,7 +52,7 @@ struct AppLogo: View {
                     .foregroundStyle(
                         LinearGradient(colors: [appTheme.accentTwo,
                                                 appTheme.accentTwo,
-                                                appTheme.blinder],
+                                                appTheme.background],
                                        startPoint:  .top,
                                        endPoint: .bottom))
                     .offset(x: frameW / 4, y: frameH / 6)

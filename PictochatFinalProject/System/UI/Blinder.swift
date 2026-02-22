@@ -14,7 +14,7 @@ class Blinder: ObservableObject {
 
     init() {
         shape = AnyShape(Rectangle())
-        displaying = true
+        displaying = false
     }
     
     init(displaying: Bool,
@@ -23,9 +23,9 @@ class Blinder: ObservableObject {
         self.shape = shape
     }
     
-    func shape(_ shape: AnyShape) -> Blinder {
+    func shape(_ shape: AnyShape) -> AnyShape {
         self.shape = shape
-        return self
+        return self.shape
     }
     
     func displaying(_ displaying: Bool) -> Blinder {
@@ -53,7 +53,7 @@ class Blinder: ObservableObject {
                 .foregroundStyle(appTheme.accentThree)
             
             blinder.shape
-                .foregroundStyle(appTheme.blinder)
+                .foregroundStyle(appTheme.background)
                 .opacity(blinder.displaying ? 1 : 0)
         }.frame(width: 300,
                 height: 300)

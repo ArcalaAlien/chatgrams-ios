@@ -15,8 +15,6 @@ struct ContentView: View {
     @EnvironmentObject internal var audioEngine: AudioEngine
     
     var body: some View {
-        let background = bgObserver.background
-
         GeometryReader { geo in
             let frameH = geo.size.height,
                 frameW = geo.size.width
@@ -44,13 +42,15 @@ struct ContentView: View {
                                                  y: geo.size.height))
                 }
                 
+                // Here's the very base background
+                Rectangle()
+                    .foregroundStyle(appTheme.background)
+                
                 // If we're not on the logo
                 // then we can use the grid background
                 if (appState.state != .logo) {
-                    background
-                        .bottomCellSize(CGSize(width: frameW * 2, height: frameH * 2))
-                        .topShading(bgObserver.topLayerShading)
-                        .bottomShading(bgObserver.bottomLayerShading)
+                    bgObserver.background
+                        .bottomCellSize(CGSize(width: frameW * 3, height: frameH * 3))
                 }
                 
                 // The current screen we're looking at
@@ -68,7 +68,7 @@ struct ContentView: View {
                 // Blinder shape to
                 // transition between screens
                 blinder.shape
-                    .foregroundStyle(appTheme.blinder)
+                    .foregroundStyle(appTheme.background)
                     .opacity(blinder.displaying ? 1 : 0)
             }
         }
