@@ -7,27 +7,13 @@
 
 import SwiftUI
 
-/// A group of values
 struct GridLineStyle {
-    /// The x and y size of the cell
-    var cellSize: CGSize
-    
-    /// Shading to pass through to the grid lines
-    var lineShading: GraphicsContext.Shading
-    
-    /// The stroke style of the grid
-    var stroke: StrokeStyle
-    
-    init(cellSize: CGSize                       = CGSize(width: 16, height: 16),
-         lineShading: GraphicsContext.Shading   = .color(.black),
-         stroke: StrokeStyle                    = StrokeStyle(lineWidth: 1,
-                                                              lineCap: .square,
-                                                              lineJoin: .miter,
-                                                              miterLimit: 1,
-                                                              dash: [],
-                                                              dashPhase: 0)) {
-        self.cellSize = cellSize
-        self.lineShading = lineShading
-        self.stroke = stroke
-    }
+    var cellSize: CGSize                        = CGSize(width: 300,
+                                                         height: 300),
+        lineShading: GraphicsContext.Shading    = .color(.black),
+        gridStroke: StrokeStyle                 = StrokeStyle(lineWidth: 1),
+        scrollStyle: GridScrollStyle            = .none,
+        cameraPosition: CGPoint                 = CGPoint(x: 100,
+                                                          y: 100),
+        cameraOffset: CGPoint                   = .zero
 }

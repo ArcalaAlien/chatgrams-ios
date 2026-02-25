@@ -7,12 +7,11 @@
 import SwiftUI
 
 struct LobbyView: View {    
-    @Environment(\.appTheme) var appTheme: AppTheme
-    @EnvironmentObject internal var appState: AppState
-    @EnvironmentObject internal var bgObserver: GridLineBackgroundObserver
-    @EnvironmentObject internal var blinder: Blinder
-    @EnvironmentObject internal var audioEngine: AudioEngine
-    
+    @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var appTheme: AppTheme
+    @EnvironmentObject private var bgObserver: GridLineBackgroundObserver
+    @EnvironmentObject private var blinder: Blinder
+    @EnvironmentObject private var audioEngine: AudioEngine
     
     var body: some View {
         GeometryReader { geo in
@@ -29,11 +28,7 @@ struct LobbyView: View {
 }
 
 #Preview {
-    @Previewable @State var preview: PreviewContainer = PreviewContainer() {
+    PreviewContainer() {
         LobbyView()
-    }
-    
-    preview.task {
-        preview.changeStateTo(.lobby, .publicGroups)
     }
 }

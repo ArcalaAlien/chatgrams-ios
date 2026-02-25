@@ -8,11 +8,11 @@ import SwiftUI
 import AVFoundation
 
 struct LogoView: View {
-    @Environment(\.appTheme) internal var appTheme: AppTheme
-    @EnvironmentObject internal var appState: AppState
-    @EnvironmentObject internal var bgObserver: GridLineBackgroundObserver
-    @EnvironmentObject internal var blinder: Blinder
-    @EnvironmentObject internal var audioEngine: AudioEngine
+    @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var appTheme: AppTheme
+    @EnvironmentObject private var bgObserver: GridLineBackgroundObserver
+    @EnvironmentObject private var blinder: Blinder
+    @EnvironmentObject private var audioEngine: AudioEngine
 
     var body: some View {
         GeometryReader { geo in
@@ -30,7 +30,7 @@ struct LogoView: View {
                     .shadow(radius: 2)
                     .background(
                         LinearGradient(
-                            colors: [.accentColor,
+                            colors: [appTheme.accentThree,
                                      appTheme.background],
                             startPoint: .top,
                             endPoint: .bottom)
@@ -77,7 +77,7 @@ struct LogoView: View {
             try? await Task.sleep(for: .seconds(2))
             
             // Switch screens!
-            appState.set(.lobby)
+            appState.set(appState.state.next())
         }
     } // end of Body
     

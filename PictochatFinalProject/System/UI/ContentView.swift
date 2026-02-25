@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.appTheme) var appTheme: AppTheme
-    @EnvironmentObject internal var appState: AppState
-    @EnvironmentObject internal var bgObserver: GridLineBackgroundObserver
-    @EnvironmentObject internal var blinder: Blinder
-    @EnvironmentObject internal var audioEngine: AudioEngine
+    @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var appTheme: AppTheme
+    @EnvironmentObject private var bgObserver: GridLineBackgroundObserver
+    @EnvironmentObject private var blinder: Blinder
+    @EnvironmentObject private var audioEngine: AudioEngine
+    
+    init() {
+        appState.set(.logo)
+    }
     
     var body: some View {
         GeometryReader { geo in
@@ -22,24 +26,18 @@ struct ContentView: View {
             ZStack {
                 // Capturing the main view's size to pass through
                 // in appState
-                Color.clear.onAppear {
-                    appState.appFrameSize = geo.size
-                    bgObserver
-                        .changeGradientsFromState(
-                            appState,
-                            appTheme: appTheme,
-                            gradientStart: .zero,
-                            gradientEnd: CGPoint(x: geo.size.width,
-                                                 y: geo.size.height))
+                Color.clear.onAppear{
+                    appState.frameSize = geo.size
                 }
                 .onChange(of: appState.state) { _,_ in
-                    bgObserver
-                        .changeGradientsFromState(
-                            appState,
-                            appTheme: appTheme,
-                            gradientStart: .zero,
-                            gradientEnd: CGPoint(x: geo.size.width,
-                                                 y: geo.size.height))
+                    bgObserver.background =
+                        bgObserver
+                            .changeGradients()
+                }
+                .onChange(of: appState.subState) { _,_ in
+                    bgObserver.background =
+                        bgObserver
+                            .changeGradients()
                 }
                 
                 // Here's the very base background
@@ -49,8 +47,13 @@ struct ContentView: View {
                 // If we're not on the logo
                 // then we can use the grid background
                 if (appState.state != .logo) {
-                    bgObserver.background
-                        .bottomCellSize(CGSize(width: frameW * 3, height: frameH * 3))
+                    bgObserver
+                        // Change our cell size
+//                        .bottomCellSize(CGSize(width: frameW,
+//                                               height: frameH))
+//                        .topCellSize(CGSize(width: frameW * 4,
+//                                            height: frameH * 4))
+                        .background // Return the actual grid!
                 }
                 
                 // The current screen we're looking at
@@ -76,7 +79,7 @@ struct ContentView: View {
 }
 
 #Preview {
-    PreviewContainer() {
+    PreviewContainer {
         ContentView()
     }
 }

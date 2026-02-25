@@ -9,18 +9,20 @@ import SwiftUI
 
 @main
 struct PictochatFinalProjectApp: App {
-    @StateObject private var appState: AppState = AppState()
-    @StateObject private var bgObserver: GridLineBackgroundObserver = GridLineBackgroundObserver()
-    @StateObject private var blinder: Blinder = Blinder()
-    @StateObject private var audioEngine: AudioEngine = AudioEngine(soundPath: .none)
+    @StateObject static var appState: AppState = AppState.shared
+    @StateObject static var appTheme: AppTheme = AppTheme.theme
+    @StateObject static var bgObserver: GridLineBackgroundObserver = GridLineBackgroundObserver()
+    @StateObject static var blinder: Blinder = Blinder()
+    @StateObject static var audioEngine: AudioEngine = AudioEngine(soundPath: .none)
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(appState)
-                .environmentObject(bgObserver)
-                .environmentObject(blinder)
-                .environmentObject(audioEngine)
         }
+        .environmentObject(PictochatFinalProjectApp.appState)
+        .environmentObject(PictochatFinalProjectApp.appTheme)
+        .environmentObject(PictochatFinalProjectApp.bgObserver)
+        .environmentObject(PictochatFinalProjectApp.blinder)
+        .environmentObject(PictochatFinalProjectApp.audioEngine)        
     }
 }

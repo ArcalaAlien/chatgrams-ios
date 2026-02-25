@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct AppLogo: View {
-    @Environment(\.appTheme) var appTheme: AppTheme
+    @ObservedObject var appTheme: AppTheme = AppTheme.theme
     
     var body: some View {
         // MARK: - Logo GeometryReader Start

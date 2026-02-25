@@ -15,16 +15,7 @@ struct LobbyFrame: View {
 }
 
 #Preview {
-    var previewContainer = PreviewContainer {LobbyFrame()}
-    
-    GeometryReader { geo in
-        ZStack {
-            previewContainer.bgObserver.background
-                .task {
-                    previewContainer.changeStateTo(.lobby, .publicGroups)
-                    print("\(previewContainer.appState.state)")
-                }
-            previewContainer.content
-        }
+    PreviewContainer {
+        LobbyFrame()
     }
 }

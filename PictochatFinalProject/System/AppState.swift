@@ -7,7 +7,9 @@
 import SwiftUI
 internal import Combine
 
-class AppState: ObservableObject {
+final class AppState: ObservableObject {
+    static var shared = AppState()
+    
     enum State: Int, CaseIterable {
         case none = -1
         case logo
@@ -76,37 +78,37 @@ class AppState: ObservableObject {
         }
     }
 
-    @Published var appFrameSize: CGSize
-    @Published var state: State
-    @Published var subState: SubState
+    @Published var frameSize: CGSize            = .zero
+    @Published var state: AppState.State        = .logo
+    @Published var subState: AppState.SubState  = .none
     
-    private var substateLists: Dictionary<State, [SubState]> = [:]
+    private static var substateLists: Dictionary<State, [SubState]> = [:]
     
     init() {
-        appFrameSize = .zero
+        frameSize = .zero
         state = .logo
         subState = .none
         
-        substateLists.updateValue([.publicGroups, .privateGroups, .lobbyCreation], forKey: .lobby)
+        AppState.substateLists.updateValue([.publicGroups, .privateGroups, .lobbyCreation], forKey: .lobby)
     }
     
-    func hasSubState(for: State) -> Bool {
-        if (substateLists.keys.contains(state)) {
+    static func hasSubState(_for: State) -> Bool {
+        if (AppState.substateLists.keys.contains(_for)) {
             return true
         }
         
         return false
     }
     
-    func getSubStateList(_for: State) -> [SubState] {
+    static func getSubStateList(_for: State) -> [SubState]? {
         if let index = substateLists.index(forKey: _for) {
             return substateLists[index].value
         }
         
-        return []
+        return nil
     }
     
-    func set(_ state: State, _ subState: SubState) {
+    func set(_ state: AppState.State, _ subState: AppState.SubState) {
         self.state = state
         self.subState = subState
     }
@@ -119,8 +121,8 @@ class AppState: ObservableObject {
         
         // A little bit of validation,
         // for states that don't have any substates.
-        if (substateLists.index(forKey: state) != nil) {
-            self.subState = substateLists[state]!.first!
+        if (AppState.substateLists.index(forKey: state) != nil) {
+            self.subState = AppState.substateLists[state]!.first!
         }
         else {
             self.subState = .none
@@ -128,7 +130,7 @@ class AppState: ObservableObject {
     } // end of update function
     
     func set(_ subState: SubState) {
-        for list in substateLists {
+        for list in AppState.substateLists {
             if (list.value.contains(subState) &&
                 list.key != self.state) {
                 self.state = list.key

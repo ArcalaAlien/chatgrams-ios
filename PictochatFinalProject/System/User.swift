@@ -7,8 +7,9 @@
 import SwiftUI
 internal import Combine
 
-class User: ObservableObject {
+class User: ObservableObject, Identifiable {
     @Published var id: UUID = UUID()
-    @Published var name: String = "User"
+    
+    @Published var name: String = "New User"
     @Published var color: Color = .accentColor
 }

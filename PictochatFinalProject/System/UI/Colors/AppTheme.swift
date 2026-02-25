@@ -2,73 +2,73 @@
 //  AppTheme.swift
 //  PictochatFinalProject
 //
-//  Created by 2155097-050 on 2/20/26.
+//  Created by 2155097-050 on 2/24/26.
 //
 import SwiftUI
+internal import Combine
 
-struct AppTheme {
-    let primary: Color,
-        secondary: Color,
-        background: Color,
-        accentOne: Color,
-        accentTwo: Color,
-        accentThree: Color,
-        accentFour: Color
+final class AppTheme: ObservableObject {
     
-    static let light = AppTheme(// Dark Grey
-                                primary: Color(red: minimize(91),
-                                               green: minimize(107),
-                                               blue: minimize(124)),
-                                
-                                // Mid Grey
-                                secondary: Color(red: minimize(230),
-                                                 green: minimize(238),
-                                                 blue: minimize(246)),
-                                // Light Grey
-                                background: Color(red: minimize(244),
-                                                  green: minimize(250),
-                                                  blue: 1),
-                                
-                                // Green
-                                accentOne: Color(red: minimize(170),
-                                                 green: 1,
-                                                 blue: minimize(160)),
-                                
-                                // Orange
-                                accentTwo: Color(red: 1,
-                                                 green: minimize(154),
-                                                 blue: minimize(100)),
-                                    
-                                // Blue
-                                accentThree: Color(red: minimize(184),
-                                                   green: 1,
-                                                   blue: minimize(247)),
-                                // Pink
-                                accentFour: Color(red: 1,
-                                                  green: minimize(180),
-                                                  blue: minimize(250)))
+    // This is the closest that I can get to
+    // a "static class" like in java.
+    //
+    // Property wrappers can't go on static
+    // variables period.
+    static let theme: AppTheme = AppTheme()
     
-    static let dark = AppTheme(primary: .white,
-                               secondary: .gray,
-                               background: .black,
-                                
-                                // Green
-                                accentOne: Color(red: 0,
-                                                 green: minimize(180),
-                                                 blue: minimize(80)),
-                                
-                                // Orange
-                                accentTwo: Color(red: minimize(200),
-                                                 green: minimize(100),
-                                                 blue: 0),
-                                // Green-cyan
-                                accentThree: Color(red: 0,
-                                                   green: minimize(189),
-                                                   blue: minimize(159)),
-                                // Purple
-                                accentFour: Color(red: minimize(138),
-                                                  green: minimize(43),
-                                                  blue: minimize(226)))
+    // Set the default color scheme to light.
+    @Published var colorScheme: ColorScheme = .light
+    
+    // Specify a private initializer to give
+    // the class a "static" feel.
+    private init() {}
+    
+    // Declare all the colors
+    
+    var primary: Color {
+        (colorScheme == .dark) ? AppTheme.rgbToColor(r: 91, g: 107, b: 124) :
+                                 AppTheme.rgbToColor(r: 91, g: 107, b: 124)
+    }
+    
+    var secondary: Color {
+        (colorScheme == .dark) ? AppTheme.rgbToColor(r: 230, g: 238, b: 246) :
+                                 AppTheme.rgbToColor(r: 230, g: 238, b: 246)
+    }
+    
+    var background: Color {
+        (colorScheme == .dark) ? AppTheme.rgbToColor(r: 244, g: 240, b: 255) :
+                                 AppTheme.rgbToColor(r: 244, g: 240, b: 255)
+    }
+    
+    var accentOne: Color {
+        (colorScheme == .dark) ? AppTheme.rgbToColor(r: 170, g: 255, b: 160) :
+                                 AppTheme.rgbToColor(r: 170, g: 255, b: 160)
+    }
+    
+    var accentTwo: Color {
+        (colorScheme == .dark) ? AppTheme.rgbToColor(r: 255, g: 154, b: 100) :
+                                 AppTheme.rgbToColor(r: 255, g: 154, b: 100)
+    }
+    
+    var accentThree: Color {
+        (colorScheme == .dark) ? AppTheme.rgbToColor(r: 184, g: 255, b: 247) :
+                                 AppTheme.rgbToColor(r: 184, g: 255, b: 247)
+    }
+    
+    var accentFour: Color {
+        (colorScheme == .dark) ? AppTheme.rgbToColor(r: 255, g: 180, b: 250) :
+                                 AppTheme.rgbToColor(r: 255, g: 180, b: 250)
+    }
+    
+    private static func rgbToColor(r: Double, g: Double, b: Double) -> Color {
+        let minR = AppTheme.minimize(r),
+            minG = AppTheme.minimize(g),
+            minB = AppTheme.minimize(b)
+        
+        return Color(red: minR,
+                     green: minG,
+                     blue: minB)
+    }
     
     private static func minimize(_ number: Double) -> Double {
         if (number > 255) {
@@ -80,68 +80,5 @@ struct AppTheme {
         }
         
         return number / 255.0
-    }
-}
-
-extension EnvironmentValues {
-    @Entry var appTheme: AppTheme = .light
-}
-
-#Preview {
-    @Previewable @Environment(\.appTheme) var appTheme: AppTheme
-    
-    VStack {
-        HStack {
-            VStack {
-                Text("Background")
-                Rectangle()
-                    .foregroundStyle(appTheme.background)
-            }
-        }
-        Divider()
-        HStack {
-            Spacer()
-            VStack {
-                Text("Primary")
-                Rectangle()
-                    .cornerRadius(40)
-                    .foregroundStyle(appTheme.primary)
-            }
-            VStack {
-                Text("Secondary")
-                Rectangle()
-                    .cornerRadius(40)
-                    .foregroundStyle(appTheme.secondary)
-            }
-            VStack {
-                Text("Accent One")
-                Rectangle()
-                    .cornerRadius(40)
-                    .foregroundStyle(appTheme.accentOne)
-            }
-            Spacer()
-        }
-        HStack {
-            Spacer()
-            VStack {
-                Text("Accent Two")
-                Rectangle()
-                    .cornerRadius(40)
-                    .foregroundStyle(appTheme.accentTwo)
-            }
-            VStack {
-                Text("Accent Three")
-                Rectangle()
-                    .cornerRadius(40)
-                    .foregroundStyle(appTheme.accentThree)
-            }
-            VStack {
-                Text("Accent Four")
-                Rectangle()
-                    .cornerRadius(40)
-                    .foregroundStyle(appTheme.accentFour)
-            }
-            Spacer()
-        }
     }
 }

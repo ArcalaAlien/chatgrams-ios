@@ -44,7 +44,7 @@ class Blinder: ObservableObject {
 
 
 #Preview {
-    @Previewable @Environment(\.appTheme) var appTheme: AppTheme
+    @Previewable @EnvironmentObject var appTheme: AppTheme
     @Previewable @StateObject var blinder: Blinder = Blinder()
     
     VStack {

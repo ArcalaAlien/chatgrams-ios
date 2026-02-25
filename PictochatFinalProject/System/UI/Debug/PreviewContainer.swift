@@ -5,12 +5,11 @@
 //  Created by 2155097-050 on 2/20/26.
 //
 import SwiftUI
-
                         // This is creating a Content "struct"
                         // that inherits from the view protocol.
 struct PreviewContainer<Content: View>: View {
-    @Environment(\.appTheme) var appTheme: AppTheme
-    @StateObject var appState: AppState = AppState()
+    @StateObject var appState: AppState = AppState.shared
+    @StateObject var appTheme: AppTheme = AppTheme.theme
     @StateObject var bgObserver: GridLineBackgroundObserver = GridLineBackgroundObserver()
     @StateObject var blinder: Blinder = Blinder()
     @StateObject var audioEngine: AudioEngine = AudioEngine(soundPath: .none)
@@ -48,15 +47,16 @@ struct PreviewContainer<Content: View>: View {
                         }
                 }
             }
-            .environmentObject(appState)
-            .environmentObject(blinder)
-            .environmentObject(bgObserver)
-            .environmentObject(audioEngine)
         }
+        .environmentObject(appState)
+        .environmentObject(appTheme)
+        .environmentObject(blinder)
+        .environmentObject(bgObserver)
+        .environmentObject(audioEngine)
     }
     
-    func changeStateTo(_ state: AppState.State, _ subState: AppState.SubState = .none) {
-        appState.set(state, subState)
+    static func changeStateTo(_ state: AppState.State, _ subState: AppState.SubState = .none) {
+        AppState.shared.set(state, subState)
     }
     
     private func createDebugStateChanger() -> some View {
@@ -65,7 +65,7 @@ struct PreviewContainer<Content: View>: View {
                 frameW: CGFloat = geo.size.width
             ZStack {
                 Color.clear.onAppear() {
-                    appState.appFrameSize = geo.size
+                    appState.frameSize = geo.size
                 }
                 
                 Rectangle()
@@ -95,6 +95,17 @@ struct PreviewContainer<Content: View>: View {
                         }
                         
                         Button("Prev Sub") {
+                            if (AppState.hasSubState(_for: appState.state)) {
+                                if let list = AppState.getSubStateList(_for: appState.state) {
+                                    if (appState.subState == list.first!) {
+                                        appState.set(appState.state,
+                                                     list.first!)
+                                    } else {
+                                        appState.set(appState.state,
+                                                     appState.subState.previous())
+                                    }
+                                }
+                            }
                         }
                         .foregroundStyle(appTheme.accentTwo)
                     } // end of previous button vstack
@@ -134,7 +145,7 @@ struct PreviewContainer<Content: View>: View {
                     .background(appTheme.accentOne)
                     .cornerRadius(5)
                     Divider()
-                        .foregroundStyle(appTheme.accentTwo)
+                        .foregroundStyle(appTheme.accentFour)
                     Spacer()
                     VStack(alignment: .center, spacing: 10) {
                         let lastState: AppState.State = .chatting
@@ -149,6 +160,17 @@ struct PreviewContainer<Content: View>: View {
                         }
                         
                         Button("Next Sub") {
+                            if (AppState.hasSubState(_for: appState.state)) {
+                                if let list = AppState.getSubStateList(_for: appState.state) {
+                                    if appState.subState == list.last! {
+                                        appState.set(appState.state,
+                                                     list.last!)
+                                    } else {
+                                        appState.set(appState.state,
+                                                     appState.subState.next())
+                                    }
+                                }
+                            }
                         }
                         .foregroundStyle(appTheme.accentTwo)
                     } // end of next button vstack
@@ -164,10 +186,10 @@ struct PreviewContainer<Content: View>: View {
             }// end of ZStack
         } // end of GeometryReader
     } // end of createStateHeader function
-} // end of Preview extension
+} // end of PreviewContainer
 
 #Preview {
     PreviewContainer() {
-        LobbyView()
+        LogoView()
     }
 }
