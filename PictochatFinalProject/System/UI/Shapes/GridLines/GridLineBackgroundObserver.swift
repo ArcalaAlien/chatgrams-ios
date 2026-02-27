@@ -9,174 +9,237 @@ import SwiftUI
 internal import Combine
 
 class GridLineBackgroundObserver: ObservableObject {
-    @EnvironmentObject private var appState: AppState
-    @EnvironmentObject private var appTheme: AppTheme
+    var appState: AppState
+    var appTheme: AppTheme
     
     @Published internal var background: GridLineBackground
     @Published internal var frameSize: CGSize
     @Published internal var environment: EnvironmentValues = EnvironmentValues()
     
     init() {
+        appState = AppState.shared
+        appTheme = AppTheme.theme
         background = GridLineBackground()
         frameSize = CGSize(width: 10, height: 10)
     }
     
-    private func calculateCellSize(cellSize: CGSize, frameSize: CGSize) -> CGSize {
-        let cellH: CGFloat = cellSize.height,
-            cellW: CGFloat = cellSize.width,
-            frameH: CGFloat = frameSize.height,
-            frameW: CGFloat = frameSize.width
+    private init(topGridStyle: GridLineStyle,
+                 bottomGridStyle: GridLineStyle,
+                 frameSize: CGSize) {
+        appState = AppState.shared
+        appTheme = AppTheme.theme
+        background = GridLineBackground(
+            topGridStyle: topGridStyle,
+            bottomGridStyle: bottomGridStyle,
+            parentFrameSize: frameSize
+        )
+        self.frameSize = frameSize
+    }
+    
+    func frameSize(_ size: CGSize) {
+        frameSize = size
+    }
+    
+    func topGridStyle(_ style: GridLineStyle) {
+        background = GridLineBackground(
+            topGridStyle: style,
+            bottomGridStyle: background.bottomGridStyle,
+            parentFrameSize: frameSize
+        )
+    }
+    
+    func bottomGridStyle(_ style: GridLineStyle) {
+        background = GridLineBackground(
+            topGridStyle: background.topGridStyle,
+            bottomGridStyle: style,
+            parentFrameSize: frameSize
+        )
+    }
+    
+    func changeBackground() {
+        let state = appState.state,
+            subState = appState.subState
         
-        if (frameH > frameW) {
-            return CGSize(width: cellW, height: cellH / 2)
-        } else if (frameH < frameW) {
-            return CGSize(width: cellW / 2, height: cellH)
-        } else {
-            return cellSize
-        }
-    }
-    
-    func topCellSize(_ size: CGSize) -> GridLineBackgroundObserver {
-        let copy = self
-//        copy.background.topLayer =
-//            background.topLayer.cellSize(
-//                calculateCellSize(cellSize: size,
-//                                  frameSize: frameSize))
-//        return copy
-        return self
-    }
-    
-    func bottomShading(_ shading: GraphicsContext.Shading) -> GridLineBackgroundObserver {
-//        let copy = self
-//        copy.background.bottomLayer =
-//            copy.background.bottomLayer.lineShading(shading)
-//        return copy
-        return self
-    }
-    
-    func topShading(_ shading: GraphicsContext.Shading) -> GridLineBackgroundObserver {
-//        let copy = self
-//        copy.background.topLayer =
-//            copy.background.topLayer.lineShading(shading)
-//        return copy
-        return self
-    }
-    
-    func changeGradients() -> GridLineBackground {
-//        let state = appState.state,
-//            subState = appState.subState
-//        
-//        let bgColor = appTheme.background,
-//            primary = appTheme.primary,
-//            secondary = appTheme.secondary,
-//            accentOne = DynamicColor(color: appTheme.accentOne),
-//            accentTwo = DynamicColor(color: appTheme.accentTwo),
-//            accentThree = DynamicColor(color: appTheme.accentThree),
-//            accentFour = DynamicColor(color: appTheme.accentFour)
-//        
-//        var backgroundCopy = self.background
-//        var topLayerCopy = backgroundCopy.topLayer
-//        var botLayerCopy = backgroundCopy.bottomLayer
-//        withAnimation(.easeIn(duration: 4)) {
-//            switch (state) {
-//                case .logo:
-//                    botLayerCopy =
-//                botLayerCopy.lineShading(.color(bgColor))
-//                   topLayerCopy =
-//                topLayerCopy.lineShading(.color(bgColor))
-//                case .lobby:
-//                    switch(subState) {
-//                        case .publicGroups:
-//                            botLayerCopy =
-//                                botLayerCopy.lineShading(.color(secondary))
-//                            topLayerCopy =
-//                                topLayerCopy.lineShading(
-//                                    .linearGradient(
-//                                        Gradient(
-//                                            colors: [accentOne.darken(by: 100).toColor(in: environment),
-//                                                     accentTwo.darken(by: 100).toColor(in: environment)]),
-//                                        startPoint: .zero,
-//                                        endPoint: CGPoint(x: frameSize.width,
-//                                                          y: frameSize.height)))
-//                        case .privateGroups:
-//                            botLayerCopy =
-//                                botLayerCopy.lineShading(.color(secondary))
-//                            topLayerCopy =
-//                                topLayerCopy.lineShading(
-//                                    .linearGradient(
-//                                        Gradient(
-//                                            colors: [accentThree.darken(by: 100).toColor(in: environment),
-//                                                     accentTwo.darken(by: 100).toColor(in: environment)]),
-//                                        startPoint: .zero,
-//                                        endPoint: CGPoint(x: frameSize.width, y: frameSize.height)))
-//                        default:
-//                            botLayerCopy =
-//                        botLayerCopy.lineShading(.color(bgColor))
-//                           topLayerCopy =
-//                               topLayerCopy.lineShading(.color(bgColor))
-//                    }
-//                case .chatting:
-//                    botLayerCopy =
-//                        botLayerCopy.lineShading(.color(primary))
-//                    topLayerCopy =
-//                        topLayerCopy.lineShading(
-//                            .linearGradient(
-//                                Gradient(
-//                                    colors: [accentThree.darken(by: 100).toColor(in: environment),
-//                                             accentTwo.darken(by: 100).toColor(in: environment)]),
-//                                startPoint: .zero,
-//                                endPoint: CGPoint(x: frameSize.width,
-//                                                  y: frameSize.height)))
-//                case .settings:
-//                    botLayerCopy =
-//                        botLayerCopy.lineShading(.color(.black))
-//                    topLayerCopy =
-//                        topLayerCopy.lineShading(
-//                            .linearGradient(
-//                                Gradient(
-//                                    colors: [accentThree.darken(by: 100).toColor(in: environment),
-//                                             accentFour.darken(by: 100).toColor(in: environment)]),
-//                                startPoint: .zero,
-//                                endPoint: CGPoint(x: frameSize.width,
-//                                                  y: frameSize.height)))
-//                default:
-//                    botLayerCopy =
-//                        botLayerCopy.lineShading(.color(bgColor))
-//                   topLayerCopy =
-//                        topLayerCopy.lineShading(.color(bgColor))
-//            } // end of case
-//        } // end of withAnimation
-//        
-//        backgroundCopy.topLayer = topLayerCopy
-//        backgroundCopy.bottomLayer = botLayerCopy
-//        return backgroundCopy
-        return self.background
+        let accentOne = DynamicColor(color: appTheme.accentOne),
+            accentTwo = DynamicColor(color: appTheme.accentTwo),
+            accentThree = DynamicColor(color: appTheme.accentThree),
+            accentFour = DynamicColor(color: appTheme.accentFour)
+        
+        switch (state) {
+            case .logo:
+                bottomGridStyle(
+                    GridLineStyle()
+                        .scrollStyle(GridScrollStyle(scrollAngle: Angle.degrees(30), scrollSpeed: -20))
+                        .lineShading(.color(appTheme.accentFour)))
+                topGridStyle(
+                    GridLineStyle()
+                        .lineShading(.color(appTheme.accentTwo)))
+            case .lobby:
+                switch(subState) {
+                    case .publicGroups:
+                        bottomGridStyle(
+                            GridLineStyle()
+                                .lineShading(.color(appTheme.secondary))
+                                .cellSize(
+                                    CGSize(width: frameSize.height / 7.5,
+                                           height: frameSize.height / 7.5))
+                                .scrollStyle(
+                                    GridScrollStyle(
+                                        scrollAngle: Angle.degrees(45),
+                                        scrollSpeed: 10
+                                    )
+                                ))
+                        topGridStyle(
+                            GridLineStyle()
+                                .lineShading(
+                                    .linearGradient(Gradient(colors: [accentOne.toColor(in: environment), accentTwo.toColor(in: environment)]), startPoint: .zero,
+                                                    endPoint:
+                                                        CGPoint(x: frameSize.width,
+                                                                y: frameSize.height))
+                                )
+                                .cellSize(
+                                    CGSize(width: frameSize.width / 2,
+                                           height: frameSize.width / 2)
+                                )
+                                .scrollStyle(
+                                    GridScrollStyle(
+                                        scrollAngle: Angle.degrees(-22.5),
+                                        scrollSpeed: 4
+                                )
+                            )
+                        )
+                    case .privateGroups:
+                        bottomGridStyle(
+                            GridLineStyle()
+                                .lineShading(.color(appTheme.secondary))
+                                .cellSize(
+                                    CGSize(width: frameSize.height / 7.5,
+                                           height: frameSize.height / 7.5))
+                                .scrollStyle(
+                                    GridScrollStyle(
+                                        scrollAngle: Angle.degrees(45),
+                                        scrollSpeed: 10
+                                    )
+                                ))
+                        topGridStyle(
+                            GridLineStyle()
+                                .lineShading(
+                                    .linearGradient(Gradient(colors: [accentOne.darken(by: 200).toColor(in: environment), accentTwo.darken(by: 200).toColor(in: environment)]), startPoint: .zero,
+                                                    endPoint:
+                                                        CGPoint(x: frameSize.width,
+                                                                y: frameSize.height))
+                                )
+                                .cellSize(
+                                    CGSize(width: frameSize.width / 2,
+                                           height: frameSize.width / 2)
+                                )
+                                .scrollStyle(
+                                    GridScrollStyle(
+                                        scrollAngle: Angle.degrees(-22.5),
+                                        scrollSpeed: 4
+                                )
+                            )
+                        )
+                    default:
+                        bottomGridStyle(
+                            GridLineStyle()
+                                .lineShading(.color(appTheme.secondary))
+                                .cellSize(
+                                    CGSize(width: frameSize.height / 7.5,
+                                           height: frameSize.height / 7.5))
+                                .scrollStyle(
+                                    GridScrollStyle(
+                                        scrollAngle: Angle.degrees(45),
+                                        scrollSpeed: 10
+                                    )
+                                ))
+                        topGridStyle(
+                            GridLineStyle()
+                                .lineShading(
+                                    .linearGradient(Gradient(colors: [accentOne.toColor(in: environment), accentTwo.toColor(in: environment)]), startPoint: .zero,
+                                                    endPoint:
+                                                        CGPoint(x: frameSize.width,
+                                                                y: frameSize.height))
+                                )
+                                .cellSize(
+                                    CGSize(width: frameSize.width / 2,
+                                           height: frameSize.width / 2)
+                                )
+                                .scrollStyle(
+                                    GridScrollStyle(
+                                        scrollAngle: Angle.degrees(-22.5),
+                                        scrollSpeed: 4
+                                )
+                            )
+                        )
+                }
+            case .chatting:
+                bottomGridStyle(
+                    GridLineStyle()
+                        .cellSize(CGSize(width: 10, height: 40))
+                        .lineShading(.color(appTheme.background)))
+                topGridStyle(
+                    GridLineStyle()
+                        .cellSize(CGSize(width: 50, height: 50))
+                        .lineShading(.color(appTheme.background)))
+            case .settings:
+                bottomGridStyle(
+                    GridLineStyle()
+                        .cellSize(CGSize(width: 10, height: 40))
+                        .lineShading(.color(appTheme.background)))
+                topGridStyle(
+                    GridLineStyle()
+                        .cellSize(CGSize(width: 50, height: 50))
+                        .lineShading(.color(appTheme.background)))
+            default:
+                bottomGridStyle(
+                    GridLineStyle()
+                        .cellSize(CGSize(width: 10, height: 40))
+                        .lineShading(.color(appTheme.background)))
+                topGridStyle(
+                    GridLineStyle()
+                        .cellSize(CGSize(width: 50, height: 50))
+                        .lineShading(.color(appTheme.background)))
+        } // end of case
     } // end of change gradient function
 } // end of observer class
 
-#Preview {
-    var bgObserver = GridLineBackgroundObserver()
+struct GridLineBGOPreview: View {
+    @EnvironmentObject var appTheme: AppTheme
+    @EnvironmentObject var bgObserver: GridLineBackgroundObserver
     
-    GeometryReader { geo in
-        let frameH = geo.size.height,
-            frameW = geo.size.width
-        
-        PreviewContainer {
-            bgObserver.background
-//                .onAppear() {
-//                    bgObserver.background.topLayer =
-//                    bgObserver.background.topLayer
-//                        .cellSize(CGSize(width: frameW, height: frameH))
-//                        .scrollStyle(GridScrollStyle(scrollAngle: Angle.degrees(-22.5), scrollSpeed: 10))
-//                        .lineShading(
-//                            .linearGradient(
-//                                Gradient(
-//                                    colors: [AppTheme.theme.accentOne,
-//                                             AppTheme.theme.accentTwo]),
-//                                    startPoint: .zero,
-//                                endPoint: CGPoint(x: frameW,
-//                                                  y: frameH)))
-//                }
+    var body: some View {
+        GeometryReader { geo in
+            ZStack {
+                Rectangle()
+                    .foregroundStyle(appTheme.background)
+                
+                bgObserver
+                    .background
+                    .onAppear() {
+                        bgObserver.frameSize(geo.size)
+                    }
+                
+                Button(
+                    action: {
+                        withAnimation(.easeInOut(duration: 2)) {
+                            bgObserver.changeBackground()
+                        }
+                    },
+                    label: {
+                        Text("Change Background")
+                    }
+                )
+                .padding()
+                .cornerRadius(20)
+                .backgroundStyle(.black.opacity(0.5))
+            }
         }
+    }
+}
+
+#Preview {
+    PreviewContainer {
+        GridLineBGOPreview()
     }
 }

@@ -31,8 +31,29 @@ struct GridLineCamera {
         var nextPosition: CGPoint = .zero
         nextPosition.x = (position.x + offset.x) + speed * cos(angle.radians) * CGFloat(elapsedTime)
         nextPosition.y = (position.y + offset.y) + speed * sin(angle.radians) * CGFloat(elapsedTime)
-            
+        nextPosition = normalizeCameraPosition(nextPosition)
+        
         return GridLineCamera(position: nextPosition,
                               scrollStyle: scrollStyle)
+    }
+    
+    private func normalizeCameraPosition(_ cameraPosition: CGPoint) -> CGPoint {
+        let cameraX = cameraPosition.x,
+            cameraY = cameraPosition.y
+        
+        var adjustCameraX: CGFloat = cameraX,
+            adjustCameraY: CGFloat = cameraY
+        
+        if (!cameraX.isFinite) {
+            print("Camera X was invalid!")
+            adjustCameraX = .zero
+        }
+        
+        if (!cameraY.isFinite) {
+            print("Camera Y was invalid!")
+            adjustCameraY = .zero
+        }
+
+        return CGPoint(x: adjustCameraX, y: adjustCameraY)
     }
 }

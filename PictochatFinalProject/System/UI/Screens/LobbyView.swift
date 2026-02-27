@@ -15,7 +15,12 @@ struct LobbyView: View {
     
     var body: some View {
         GeometryReader { geo in
-            Text("Hello!")
+            ZStack {
+                LobbyFrame()
+                ScrollView(.vertical, showsIndicators: false) {
+                    
+                }
+            }
         }.task {
             blinder.show()
             

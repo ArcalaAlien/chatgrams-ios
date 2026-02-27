@@ -8,53 +8,60 @@
 import SwiftUI
 
 struct GridLineBackground: View {
-    var topGridStyle: GridLineStyle = GridLineStyle()
-    var bottomGridStyle: GridLineStyle = GridLineStyle()
+    var topGridStyle: GridLineStyle,
+        bottomGridStyle: GridLineStyle
     
-    internal var bottomLayer: GridLines = GridLines(),
-                 topLayer: GridLines = GridLines()
-                 
-    @State internal var parentFrameSize: CGSize = CGSize(width: 100, height: 100)
-        
+    private var bottomLayer: GridLines,
+                 topLayer: GridLines
+    
+    @State private var parentFrameSize: CGSize
+    
     init() {
-        
+        topGridStyle = GridLineStyle()
+        bottomGridStyle = GridLineStyle()
+        bottomLayer = GridLines()
+        topLayer = GridLines()
+        parentFrameSize = CGSize(width: 100, height: 100)
+    }
+    
+    init(topGridStyle: GridLineStyle,
+         bottomGridStyle: GridLineStyle,
+         parentFrameSize: CGSize) {
+        self.topGridStyle = topGridStyle
+        self.bottomGridStyle = bottomGridStyle
+        self.parentFrameSize = parentFrameSize
+        bottomLayer = GridLines()
+        topLayer = GridLines()
     }
     
     var body: some View {
         GeometryReader { geo in
             ZStack {
+                
+
                 bottomLayer
+                    .gridStyle(bottomGridStyle)
                 topLayer
+                    .gridStyle(topGridStyle)
+                
+
             }.task {
                 parentFrameSize = geo.size
             }
+            .compositingGroup()
         }
         .background(Color.clear)
-    }
-    
-    private func calculateCellSize(cellSize: CGSize, frameSize: CGSize) -> CGSize {
-        let cellH: CGFloat = cellSize.height,
-            cellW: CGFloat = cellSize.width,
-            frameH: CGFloat = frameSize.height,
-            frameW: CGFloat = frameSize.width
-        
-        if (frameH > frameW) {
-            return CGSize(width: cellW, height: cellH / 2)
-        } else if (frameH < frameW) {
-            return CGSize(width: cellW / 2, height: cellH)
-        } else {
-            return cellSize
-        }
     }
 }
 
 #Preview {
     PreviewContainer {
         GeometryReader { geo in
-            let frameH = geo.size.height,
-                frameW = geo.size.width
+            var bg = GridLineBackground(topGridStyle: GridLineStyle(),
+                                        bottomGridStyle: GridLineStyle(),
+                                        parentFrameSize: geo.size)
             
-            GridLineBackground()
+            bg
         }
     }
 }

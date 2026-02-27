@@ -29,17 +29,6 @@ struct ContentView: View {
                 Color.clear.onAppear{
                     appState.frameSize = geo.size
                 }
-                .onChange(of: appState.state) { _,_ in
-                    bgObserver.background =
-                        bgObserver
-                            .changeGradients()
-                }
-                .onChange(of: appState.subState) { _,_ in
-                    bgObserver.background =
-                        bgObserver
-                            .changeGradients()
-                }
-                
                 // Here's the very base background
                 Rectangle()
                     .foregroundStyle(appTheme.background)
