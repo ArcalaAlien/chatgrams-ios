@@ -12,7 +12,7 @@ struct PreviewContainer<Content: View>: View {
     @StateObject var appTheme: AppTheme = AppTheme.theme
     @StateObject var bgObserver: GridLineBackgroundObserver = GridLineBackgroundObserver()
     @StateObject var blinder: Blinder = Blinder()
-    @StateObject var audioEngine: AudioEngine = AudioEngine(soundPath: .none)
+    @StateObject var audioEngine: AudioEngine = AudioEngine()
     
     @State var displaying: Bool = true
     
@@ -33,6 +33,12 @@ struct PreviewContainer<Content: View>: View {
             
             ZStack {
                 content
+                    .background(appTheme.background)
+                    .environmentObject(appState)
+                    .environmentObject(appTheme)
+                    .environmentObject(blinder)
+                    .environmentObject(bgObserver)
+                    .environmentObject(audioEngine)
                 ZStack {
                     createDebugStateChanger()
                         .offset(y: displaying ? -frameH / 2.25 : -frameH / 1.7)
@@ -46,13 +52,13 @@ struct PreviewContainer<Content: View>: View {
                             debugBlinder = debugBlinder.displaying(displaying)
                         }
                 }
+                .environmentObject(appState)
+                .environmentObject(appTheme)
+                .environmentObject(blinder)
+                .environmentObject(bgObserver)
+                .environmentObject(audioEngine)
             }
         }
-        .environmentObject(appState)
-        .environmentObject(appTheme)
-        .environmentObject(blinder)
-        .environmentObject(bgObserver)
-        .environmentObject(audioEngine)
     }
     
     static func changeStateTo(_ state: AppState.State, _ subState: AppState.SubState = .none) {

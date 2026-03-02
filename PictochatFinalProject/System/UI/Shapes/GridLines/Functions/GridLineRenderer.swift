@@ -39,12 +39,12 @@ struct GridLineRenderer {
             return Path()
         }
         
-        guard (frameH.isFinite && frameH > 0) else {
+        guard (sizeX.isFinite && sizeX > 0) else {
             print("sizeX \(sizeX) was invalid!")
             return Path()
         }
          
-        guard (frameH.isFinite && frameH > 0) else {
+        guard (sizeY.isFinite && sizeY > 0) else {
             print("sizeY \(sizeY) was invalid!")
             return Path()
         }
@@ -59,11 +59,11 @@ struct GridLineRenderer {
         // This is OFFSCREEN to give the illusion of
         // an infinite scrolling plane
         //
-        // Otherwise, we draw from just off the top of the screen
+        // Otherwise, we draw from the top of the screen
         let lineSpawnX = isScrolling ?
-        floor((-cameraX / sizeX)) * sizeX + cameraX : -5,
+        floor((-cameraX / sizeX)) * sizeX + cameraX : 0,
             lineSpawnY = isScrolling ?
-                         floor((-cameraY / sizeY)) * sizeY + cameraY : -5
+                         floor((-cameraY / sizeY)) * sizeY + cameraY : 0
         
         // Set up our path for drawing
         var gridPath = Path()
@@ -96,7 +96,6 @@ struct GridLineRenderer {
     
     private func normalizeValue(_ number: CGFloat) -> CGFloat {
         if (!number.isFinite || number.isZero) {
-            print("Value \(number) was invalid2!")
             return 1
         }
         

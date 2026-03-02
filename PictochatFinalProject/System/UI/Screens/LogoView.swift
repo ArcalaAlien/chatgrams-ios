@@ -56,11 +56,12 @@ struct LogoView: View {
             // and the code will stop.
             try? await Task.sleep(for: .seconds(2))
             
+            bgObserver.changeBackground()
+            
             // Set up and play the start up jingle and
             // unhide the screen
-            audioEngine.changeToFile("logo_jingle", withExtension: "mp3")
+            audioEngine.play()
             withAnimation(.easeInOut(duration: 2)) {
-                audioEngine.play()
                 blinder.hide()
             }
             

@@ -40,30 +40,30 @@ struct DynamicColor: ShapeStyle {
         
         return Color(hue: hue,
                      saturation: saturation,
-                     brightness: brightness,
+                     brightness: adjBrightness,
                      opacity: opacity)
     }
     
     func lighten(by: CGFloat) -> DynamicColor {
-        var current: CGFloat = brightness
-        current += by
+        var copy = self
+        copy.brightness += by
         
-        if (current > 255) {
-            current = 255
+        if (copy.brightness > 255) {
+            copy.brightness = 255
         }
         
-        return DynamicColor(color: self.color, brightness: current)
+        return copy
     }
     
     func darken(by: CGFloat) -> DynamicColor  {
-        var current: CGFloat = brightness
-        current -= by
+        var copy = self
+        copy.brightness -= by
         
-        if (current < 0) {
-            current = 0
+        if (copy.brightness < 0) {
+            copy.brightness = 0
         }
         
-        return DynamicColor(color: self.color, brightness: current)
+        return copy
     }
     
     func toColor(in environment: EnvironmentValues) -> Color {

@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct AppLogo: View {
-    @ObservedObject var appTheme: AppTheme = AppTheme.theme
+    @EnvironmentObject var appTheme: AppTheme
     
     var body: some View {
         // MARK: - Logo GeometryReader Start
@@ -33,10 +33,8 @@ struct AppLogo: View {
                 // TODO: Find easier way to do this
                 Image(systemName: "pencil.and.scribble")
                     .resizable()
-                    .scaledToFit()
-                    .frame(width: frameW,
+                    .frame(width: frameW / 1.25,
                            height: frameH / 2.25)
-                    .scaledToFit()
                     .font(.system(size: frameH / 1.75))
                     .offset(x: -frameW / 4, y: (-frameH / 6) - (frameH / 4.75))
                     .foregroundStyle(LinearGradient(colors: [.white, .gray],
@@ -58,8 +56,7 @@ struct AppLogo: View {
                     .offset(x: frameW / 4, y: frameH / 6)
                 Image(systemName: "keyboard.fill")
                     .resizable()
-                    .scaledToFit()
-                    .frame(width: frameW,
+                    .frame(width: frameW / 1.25,
                            height: frameH / 2.25)
                     .offset(x: frameW / 4, y: (frameH / 6) - (frameH / 4.75))
                     .foregroundStyle(LinearGradient(colors: [.white, .gray],

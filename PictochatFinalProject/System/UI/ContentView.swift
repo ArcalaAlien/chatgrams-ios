@@ -14,47 +14,52 @@ struct ContentView: View {
     @EnvironmentObject private var blinder: Blinder
     @EnvironmentObject private var audioEngine: AudioEngine
     
-    init() {
-        appState.set(.logo)
-    }
-    
     var body: some View {
         GeometryReader { geo in
-            let frameH = geo.size.height,
-                frameW = geo.size.width
-                        
             ZStack {
-                // Capturing the main view's size to pass through
-                // in appState
-                Color.clear.onAppear{
-                    appState.frameSize = geo.size
-                }
                 // Here's the very base background
                 Rectangle()
                     .foregroundStyle(appTheme.background)
+                    .onAppear{
+                        appState.frameSize = geo.size
+                    }
                 
                 // If we're not on the logo
                 // then we can use the grid background
                 if (appState.state != .logo) {
-                    bgObserver
-                        // Change our cell size
-//                        .bottomCellSize(CGSize(width: frameW,
-//                                               height: frameH))
-//                        .topCellSize(CGSize(width: frameW * 4,
-//                                            height: frameH * 4))
-                        .background // Return the actual grid!
+                    bgObserver.background
                 }
                 
                 // The current screen we're looking at
                 switch(appState.state) {
                     case .logo:
                         LogoView()
+                            .environmentObject(appTheme)
+                            .environmentObject(appState)
+                            .environmentObject(bgObserver)
+                            .environmentObject(blinder)
+                            .environmentObject(audioEngine)
                     case .lobby:
                         LobbyView()
+                            .environmentObject(appTheme)
+                            .environmentObject(appState)
+                            .environmentObject(bgObserver)
+                            .environmentObject(blinder)
+                            .environmentObject(audioEngine)
                     case .settings:
                         SettingsView()
+                            .environmentObject(appTheme)
+                            .environmentObject(appState)
+                            .environmentObject(bgObserver)
+                            .environmentObject(blinder)
+                            .environmentObject(audioEngine)
                     default:
                         LogoView()
+                            .environmentObject(appTheme)
+                            .environmentObject(appState)
+                            .environmentObject(bgObserver)
+                            .environmentObject(blinder)
+                            .environmentObject(audioEngine)
                 }
                 
                 // Blinder shape to
@@ -63,6 +68,8 @@ struct ContentView: View {
                     .foregroundStyle(appTheme.background)
                     .opacity(blinder.displaying ? 1 : 0)
             }
+        }.onAppear() {
+            appState.set(.logo)
         }
     }
 }

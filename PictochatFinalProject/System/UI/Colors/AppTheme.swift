@@ -56,8 +56,13 @@ final class AppTheme: ObservableObject {
     }
     
     var accentFour: Color {
-        (colorScheme == .dark) ? AppTheme.rgbToColor(r: 255, g: 180, b: 250) :
-                                 AppTheme.rgbToColor(r: 255, g: 180, b: 250)
+        (colorScheme == .dark) ? AppTheme.rgbToColor(r: 255, g: 250, b: 120) :
+                                 AppTheme.rgbToColor(r: 255, g: 250, b: 120)
+    }
+    
+    var accentFive: Color {
+        (colorScheme == .dark) ? AppTheme.rgbToColor(r: 255, g: 80, b: 100) :
+                                 AppTheme.rgbToColor(r: 255, g: 80, b: 100)
     }
     
     private static func rgbToColor(r: Double, g: Double, b: Double) -> Color {
@@ -80,5 +85,33 @@ final class AppTheme: ObservableObject {
         }
         
         return number / 255.0
+    }
+}
+
+#Preview {
+    PreviewContainer {
+        Grid {
+            GridRow {
+                Rectangle()
+                    .foregroundStyle(AppTheme.theme.background)
+                Rectangle()
+                    .foregroundStyle(AppTheme.theme.primary)
+                Rectangle()
+                    .foregroundStyle(AppTheme.theme.secondary)
+                Rectangle()
+                    .foregroundStyle(AppTheme.theme.accentOne)
+            }
+            
+            GridRow {
+                Rectangle()
+                    .foregroundStyle(AppTheme.theme.accentTwo)
+                Rectangle()
+                    .foregroundStyle(AppTheme.theme.accentThree)
+                Rectangle()
+                    .foregroundStyle(AppTheme.theme.accentFour)
+                Rectangle()
+                    .foregroundStyle(AppTheme.theme.accentFive)
+            }
+        }
     }
 }

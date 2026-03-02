@@ -40,20 +40,24 @@ class GridLineBackgroundObserver: ObservableObject {
         frameSize = size
     }
     
-    func topGridStyle(_ style: GridLineStyle) {
-        background = GridLineBackground(
+    func topGridStyle(_ style: GridLineStyle) -> GridLineBackground {
+        var copy = self.background
+        copy = GridLineBackground(
             topGridStyle: style,
             bottomGridStyle: background.bottomGridStyle,
             parentFrameSize: frameSize
         )
+        return copy
     }
     
-    func bottomGridStyle(_ style: GridLineStyle) {
-        background = GridLineBackground(
+    func bottomGridStyle(_ style: GridLineStyle) -> GridLineBackground {
+        var copy = self.background
+        copy = GridLineBackground(
             topGridStyle: background.topGridStyle,
             bottomGridStyle: style,
             parentFrameSize: frameSize
         )
+        return copy
     }
     
     func changeBackground() {
@@ -67,39 +71,40 @@ class GridLineBackgroundObserver: ObservableObject {
         
         switch (state) {
             case .logo:
-                bottomGridStyle(
+                background = bottomGridStyle(
                     GridLineStyle()
-                        .scrollStyle(GridScrollStyle(scrollAngle: Angle.degrees(30), scrollSpeed: -20))
-                        .lineShading(.color(appTheme.accentFour)))
-                topGridStyle(
+                        .lineShading(.color(appTheme.background)))
+                background = topGridStyle(
                     GridLineStyle()
-                        .lineShading(.color(appTheme.accentTwo)))
+                        .lineShading(.color(appTheme.background)))
             case .lobby:
                 switch(subState) {
                     case .publicGroups:
-                        bottomGridStyle(
+                        background = bottomGridStyle(
                             GridLineStyle()
-                                .lineShading(.color(appTheme.secondary))
+                                .lineShading(.color(appTheme.primary))
                                 .cellSize(
-                                    CGSize(width: frameSize.height / 7.5,
-                                           height: frameSize.height / 7.5))
+                                    CGSize(width: frameSize.height * 30,
+                                           height: frameSize.height * 30))
                                 .scrollStyle(
                                     GridScrollStyle(
                                         scrollAngle: Angle.degrees(45),
                                         scrollSpeed: 10
                                     )
                                 ))
-                        topGridStyle(
+                        background = topGridStyle(
                             GridLineStyle()
                                 .lineShading(
-                                    .linearGradient(Gradient(colors: [accentOne.toColor(in: environment), accentTwo.toColor(in: environment)]), startPoint: .zero,
+                                    .linearGradient(Gradient(colors: [appTheme.accentOne,
+                                         appTheme.accentTwo]),
+                                                    startPoint: .zero,
                                                     endPoint:
-                                                        CGPoint(x: frameSize.width,
-                                                                y: frameSize.height))
+                                                        CGPoint(x: frameSize.width * 30,
+                                                                y: frameSize.height * 30))
                                 )
                                 .cellSize(
-                                    CGSize(width: frameSize.width / 2,
-                                           height: frameSize.width / 2)
+                                    CGSize(width: frameSize.width * 20,
+                                           height: frameSize.width * 20)
                                 )
                                 .scrollStyle(
                                     GridScrollStyle(
@@ -109,9 +114,9 @@ class GridLineBackgroundObserver: ObservableObject {
                             )
                         )
                     case .privateGroups:
-                        bottomGridStyle(
+                        background = bottomGridStyle(
                             GridLineStyle()
-                                .lineShading(.color(appTheme.secondary))
+                                .lineShading(.color(appTheme.primary))
                                 .cellSize(
                                     CGSize(width: frameSize.height / 7.5,
                                            height: frameSize.height / 7.5))
@@ -121,10 +126,10 @@ class GridLineBackgroundObserver: ObservableObject {
                                         scrollSpeed: 10
                                     )
                                 ))
-                        topGridStyle(
+                        background = topGridStyle(
                             GridLineStyle()
                                 .lineShading(
-                                    .linearGradient(Gradient(colors: [accentOne.darken(by: 200).toColor(in: environment), accentTwo.darken(by: 200).toColor(in: environment)]), startPoint: .zero,
+                                    .linearGradient(Gradient(colors: [accentOne.darken(by: 200).toColor(in: environment), accentTwo.darken(by: 50).toColor(in: environment)]), startPoint: .zero,
                                                     endPoint:
                                                         CGPoint(x: frameSize.width,
                                                                 y: frameSize.height))
@@ -141,7 +146,7 @@ class GridLineBackgroundObserver: ObservableObject {
                             )
                         )
                     default:
-                        bottomGridStyle(
+                        background = bottomGridStyle(
                             GridLineStyle()
                                 .lineShading(.color(appTheme.secondary))
                                 .cellSize(
@@ -153,7 +158,7 @@ class GridLineBackgroundObserver: ObservableObject {
                                         scrollSpeed: 10
                                     )
                                 ))
-                        topGridStyle(
+                        background = topGridStyle(
                             GridLineStyle()
                                 .lineShading(
                                     .linearGradient(Gradient(colors: [accentOne.toColor(in: environment), accentTwo.toColor(in: environment)]), startPoint: .zero,
@@ -174,29 +179,29 @@ class GridLineBackgroundObserver: ObservableObject {
                         )
                 }
             case .chatting:
-                bottomGridStyle(
+                background = bottomGridStyle(
                     GridLineStyle()
                         .cellSize(CGSize(width: 10, height: 40))
                         .lineShading(.color(appTheme.background)))
-                topGridStyle(
+                background = topGridStyle(
                     GridLineStyle()
                         .cellSize(CGSize(width: 50, height: 50))
                         .lineShading(.color(appTheme.background)))
             case .settings:
-                bottomGridStyle(
+                background = bottomGridStyle(
                     GridLineStyle()
                         .cellSize(CGSize(width: 10, height: 40))
                         .lineShading(.color(appTheme.background)))
-                topGridStyle(
+                background = topGridStyle(
                     GridLineStyle()
                         .cellSize(CGSize(width: 50, height: 50))
                         .lineShading(.color(appTheme.background)))
             default:
-                bottomGridStyle(
+                background = bottomGridStyle(
                     GridLineStyle()
                         .cellSize(CGSize(width: 10, height: 40))
                         .lineShading(.color(appTheme.background)))
-                topGridStyle(
+                background = topGridStyle(
                     GridLineStyle()
                         .cellSize(CGSize(width: 50, height: 50))
                         .lineShading(.color(appTheme.background)))

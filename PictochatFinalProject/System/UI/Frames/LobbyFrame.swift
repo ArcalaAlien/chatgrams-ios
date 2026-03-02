@@ -22,8 +22,8 @@ struct LobbyFrame: View {
                     Rectangle()
                         .frame(width: frameW / 1.125, height: frameH / 1.125)
                         .foregroundStyle(LinearGradient(
-                            colors: [appTheme.primary,
-                                     appTheme.primary,
+                            colors: [appTheme.primary.opacity(0.9),
+                                     appTheme.primary.opacity(0.5),
                                      .clear],
                             startPoint: .top,
                             endPoint: .bottom))
@@ -33,11 +33,12 @@ struct LobbyFrame: View {
                                     .fontWeight(.bold)
                                     .fontDesign(.monospaced)})
                     .padding()
-                    .foregroundStyle(appTheme.secondary)
+                    .foregroundStyle(appTheme.primary)
                     .background(
                         LinearGradient(
                             colors: [.clear,
-                                     appTheme.primary],
+                                     appTheme.primary.opacity(0.5),
+                                     appTheme.primary.opacity(0.9)],
                             startPoint: .top,
                             endPoint: .bottom))
                     Spacer()

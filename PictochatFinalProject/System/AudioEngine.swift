@@ -12,61 +12,53 @@ import SwiftUI
 internal import Combine
 
 final class AudioEngine: ObservableObject {
-    @Published var soundPath: String? = .none
     @Published var isPlaying = false
-    @Published var currentTime: TimeInterval = .zero
+    @Published var currentTime: CMTime = CMTime.invalid
+    var duration: TimeInterval? {
+        player?.currentItem!.duration.seconds ?? 1
+    }
     
-    private var player: AVAudioPlayer?
+    private var player: AVQueuePlayer?
+    private var looper: AVPlayerLooper?
     private var timer: Timer?
     
-    var duration: TimeInterval? {
-        player?.duration ?? 1
-    }
+    var logoAsset: AVURLAsset = AVURLAsset(url: .currentDirectory())
+    var lobbyAsset: AVURLAsset = AVURLAsset(url: .currentDirectory())
     
     var volume: Float {
         get { player?.volume ?? 0.5 }
         set { player?.volume = newValue}
     }
     
-    init(soundPath: String?) {
-        self.soundPath = soundPath ?? "logo_jingle"
-        
-        guard let url = Bundle.main.url(forResource: self.soundPath, withExtension: "mp3") else {
-            print("Unable to find \(self.soundPath ?? "logo").mp3!")
-            return;
-        }
-        
-        do {
-            player = try AVAudioPlayer(contentsOf: url)
-            player?.prepareToPlay()
-        } catch {
-            print("Unable to load AVAudioPlayer!")
-        }
-    }
-    
-    func changeToFile(_ filePath: String?, withExtension: String?) {
-        if (isPlaying) {
-            print("Cannot change file while playing!")
+    init() {
+//        
+//        do {
+//            player = try AVAudioPlayer(contentsOf: url)
+//            player?.prepareToPlay()
+//        } catch {
+//            print("Unable to load AVAudioPlayer!")
+//        }
+        guard let url = Bundle.main.url(forResource: "logo_jingle", withExtension: "mp3") else {
+            print("Unable to find logo_jingle.mp3!")
             return
         }
         
-        soundPath = filePath ?? "NONE"
+        logoAsset = AVURLAsset(url: url)
+
         
-        if (player != nil) {
-            player = nil
+        guard let url = Bundle.main.url(forResource: "lobby_bg", withExtension: "mp3") else {
+            print("Unable to find lobby_bg.mp3!")
+            return
         }
         
-        guard let url = Bundle.main.url(forResource: soundPath, withExtension: "mp3") else {
-            print("Unable to find \(soundPath ?? "logo").mp3!")
-            return;
-        }
+        lobbyAsset = AVURLAsset(url: url)
         
-        do {
-            player = try AVAudioPlayer(contentsOf: url)
-            player?.prepareToPlay()
-        } catch {
-            print ("Unable to load new AVAudioPlayer!")
-        }
+        let logoItem: AVPlayerItem = AVPlayerItem(asset: logoAsset),
+            lobbyItem: AVPlayerItem = AVPlayerItem(asset: lobbyAsset)
+        
+        player = AVQueuePlayer()
+        player?.insert(logoItem, after: nil)
+        player?.insert(lobbyItem, after: nil)
     }
     
     func play() {
@@ -81,13 +73,34 @@ final class AudioEngine: ObservableObject {
         stopTrackingTime()
     }
     
+    func loop() {
+        looper = AVPlayerLooper(player: player!, templateItem: player!.currentItem!)
+    }
+    
+    func next() {
+        if (isPlaying) {
+            while (player!.volume > 0) {
+                player?.volume -= (1/60)
+            }
+        }
+        
+        pause()
+        player?.advanceToNextItem()
+        player?.preroll(atRate: player!.rate)
+        play()
+        
+        while (player!.volume < 1) {
+            player?.volume += (1/60)
+        }
+    }
+    
     private func startTrackingTime() {
         if (timer != nil) {
             stopTrackingTime()
         }
         
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) {_ in
-            self.currentTime = self.player?.currentTime ?? 0
+            self.currentTime = self.player?.currentItem!.currentTime() ?? CMTime(value: 0, timescale: 1)
         }
     }
     
@@ -97,6 +110,6 @@ final class AudioEngine: ObservableObject {
             timer = nil
         }
             
-        currentTime = 0.0
+        currentTime = CMTime(value: 0, timescale: 1)
     }
 }
